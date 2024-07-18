@@ -56,7 +56,7 @@ const Payment = () => {
     );
   }, []);
 
-  // Monitor and modify translateX1
+  // Monitor and modify left 1
   useDerivedValue(() => {
     if (left1.value === -width) {
       left1.value = width;
@@ -68,7 +68,7 @@ const Payment = () => {
     }
   });
 
-  // Monitor and modify translateX2
+  // Monitor and modify left 2
   useDerivedValue(() => {
     if (left2.value === -width) {
       left2.value = width;
@@ -79,7 +79,7 @@ const Payment = () => {
       );
     }
   });
-  // Monitor and modify translateX1
+  // Monitor and modify left 3
   useDerivedValue(() => {
     if (left3.value === width) {
       left3.value = -width;
@@ -91,7 +91,7 @@ const Payment = () => {
     }
   });
 
-  // Monitor and modify translateX2
+  // Monitor and modify left 4
   useDerivedValue(() => {
     if (left4.value === width) {
       left4.value = -width;
@@ -127,11 +127,11 @@ const Payment = () => {
         </View>
       </ImageBackground>
       <View className="flex-1 bg-black ">
-        <View className="flex flex-col gap-11">
-          <View className=" ">
+        <View className="flex flex-col flex-1 justify-center">
+          <View>
             <Animated.View
               style={{left: left1}}
-              className="flex flex-row w-full gap-2 absolute ">
+              className="flex flex-row w-full gap-2 absolute  ">
               <SlidingText text="Ai chat" />
               <SlidingText text="Text to voice" />
               <SlidingText text="Ai chat" />
@@ -144,7 +144,7 @@ const Payment = () => {
               <SlidingText text="wwww" />
             </Animated.View>
           </View>
-          <View className="  flex ">
+          <View className="mt-12">
             <Animated.View
               style={{left: left3}}
               className="flex flex-row w-full gap-2 absolute ">
@@ -152,12 +152,31 @@ const Payment = () => {
               <SlidingText text="Text to voice" />
               <SlidingText text="Ai chat" />
             </Animated.View>
-            b
             <Animated.View
               style={{left: left4}}
               className="flex flex-row w-full gap-2 absolute">
               <SlidingText text="zzzz" />
             </Animated.View>
+          </View>
+        </View>
+        <View className="m-5 flex">
+          <View style={{gap: 15}} className="flex flex-row mb-4">
+            <PriceButton />
+            <PriceButton />
+            <PriceButton />
+          </View>
+          <TouchableOpacity className="bg-blue-400 p-4 rounded-lg">
+            <Text className="text-center text-bold text-lg text-white">
+              Start Free Trial
+            </Text>
+          </TouchableOpacity>
+          <View className="flex flex-row justify-between py-3">
+            <TouchableOpacity>
+              <Text className="text-white">Cancel Anytime</Text>
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <Text className="text-white">Privacy Policy</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </View>
@@ -167,9 +186,22 @@ const Payment = () => {
 
 const SlidingText = ({text}: {text: string}) => {
   return (
-    <Text className="text-white/50 mx-2 flex-1 p-2 px-5 rounded-full bg-white/10">
+    <Text className="text-white/50 mx-2 flex-1 p-2 px-5 rounded-full bg-gray-500/10">
       {text}
     </Text>
+  );
+};
+
+const PriceButton = () => {
+  return (
+    <TouchableOpacity className="bg-gray-500/10 h-40 flex-1   overflow-hidden rounded-lg">
+      <View className="flex-1 items-center justify-center">
+        <Text className="text-white text-3xl  text-center">$2.99</Text>
+      </View>
+      <Text className="text-white text-xl bg-gray-500/30 text-center p-1">
+        Weekly
+      </Text>
+    </TouchableOpacity>
   );
 };
 
