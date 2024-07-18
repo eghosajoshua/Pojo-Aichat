@@ -1,4 +1,3 @@
-import {Text, View} from 'react-native';
 import React from 'react';
 import Payment from './src/pages/payment';
 
