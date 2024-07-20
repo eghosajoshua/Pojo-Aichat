@@ -5,7 +5,6 @@ import {
   StatusBar,
   ImageBackground,
   TouchableOpacity,
-  TextInput,
   Dimensions,
   Image,
   Pressable,
