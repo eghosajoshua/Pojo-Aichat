@@ -6,7 +6,7 @@ import {
   StatusBar,
   Dimensions,
 } from 'react-native';
-import {useEffect} from 'react';
+import {useEffect, useState} from 'react';
 //@ts-ignore
 import Icon from 'react-native-vector-icons/AntDesign';
 import LinearGradient from 'react-native-linear-gradient';
@@ -26,6 +26,32 @@ const Payment = () => {
   const left2 = useSharedValue(width);
   const left3 = useSharedValue(0);
   const left4 = useSharedValue(-width);
+  const [paymentPrices, setPaymentPrices] = useState([
+    {
+      name: 'Weekly',
+      price: 1.99,
+      selected: false,
+    },
+    {
+      name: 'Monthly',
+      price: 4.99,
+      selected: true,
+    },
+    {
+      name: 'Yearly',
+      price: 29.99,
+      selected: false,
+    },
+  ]);
+
+  const SetSelected = (name: string) => {
+    let newData = paymentPrices.map(price =>
+      price.name === name
+        ? {...price, selected: true}
+        : {...price, selected: false},
+    );
+    setPaymentPrices(newData);
+  };
 
   useEffect(() => {
     left1.value = repeat(
@@ -113,7 +139,7 @@ const Payment = () => {
           start={{x: 0.5, y: 0.25}}
           end={{x: 0.5, y: 1.0}}
           colors={['transparent', 'rgba(0,0,0,0.5)']}
-          className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-transparent to-red-500"></LinearGradient>
+          className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-transparent to-black"></LinearGradient>
         <View className="h-full w-full p-4 pt-12  flex justify-between">
           <View className="flex w-full flex-row justify-between">
             <TouchableOpacity className="flex items-center justify-center rounded-full bg-white/20 h-7 w-7 ">
@@ -159,15 +185,21 @@ const Payment = () => {
             </Animated.View>
           </View>
         </View>
-        <View className="m-5 flex">
-          <View style={{gap: 15}} className="flex flex-row mb-4">
-            <PriceButton />
-            <PriceButton />
-            <PriceButton />
+        <View className="m-10 flex">
+          <View style={{gap: 12}} className="flex flex-row mb-4 items-end">
+            {paymentPrices.map((price, index) => (
+              <PriceButton
+                key={index}
+                name={price.name}
+                price={price.price}
+                selected={price.selected}
+                SetSelected={SetSelected}
+              />
+            ))}
           </View>
-          <TouchableOpacity className="bg-blue-400 p-4 rounded-lg">
-            <Text className="text-center text-bold text-lg text-white">
-              Start Free Trial
+          <TouchableOpacity className="bg-cyan-600 p-4 rounded-lg">
+            <Text className="text-center font-extrabold text-xl text-white">
+              Subscribe
             </Text>
           </TouchableOpacity>
           <View className="flex flex-row justify-between py-3">
@@ -192,15 +224,39 @@ const SlidingText = ({text}: {text: string}) => {
   );
 };
 
-const PriceButton = () => {
+const PriceButton = ({
+  name,
+  price,
+  selected,
+  SetSelected,
+}: {
+  name: string;
+  price: number;
+  selected: boolean;
+  SetSelected: Function;
+}) => {
   return (
-    <TouchableOpacity className="bg-gray-500/10 h-40 flex-1   overflow-hidden rounded-lg">
-      <View className="flex-1 items-center justify-center">
-        <Text className="text-white text-3xl  text-center">$2.99</Text>
+    <TouchableOpacity
+      onPress={() => SetSelected(name)}
+      className={
+        'bg-gray-500/10 flex-1 overflow-hidden  rounded-lg relative ' +
+        (name == 'Monthly' ? 'h-44 ' : 'h-40')
+      }>
+      <LinearGradient
+        start={{x: 0.5, y: 0.25}}
+        end={{x: 0.5, y: 1.0}}
+        colors={['#0891b2', '#7000FF']}
+        className="absolute top-0 left-0 w-full h-full"></LinearGradient>
+      <View className="h-full">
+        <View className="flex-1 items-center justify-center bg-black m-[0.5px] mb-0 rounded-t-lg">
+          <Text className="text-white text-3xl  text-center">${price}</Text>
+        </View>
+        <Text
+          style={selected && {backgroundColor: '#0891b2'}}
+          className="text-white text-xl m-[0.5px] rounded-b-lg mt-0 bg-gray-700 text-center p-1">
+          {name}
+        </Text>
       </View>
-      <Text className="text-white text-xl bg-gray-500/30 text-center p-1">
-        Weekly
-      </Text>
     </TouchableOpacity>
   );
 };
