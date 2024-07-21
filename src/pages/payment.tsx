@@ -21,7 +21,7 @@ import Animated, {
 
 const {width} = Dimensions.get('window');
 
-const Payment = () => {
+const Payment = ({navigation}: any) => {
   const left1 = useSharedValue(0);
   const left2 = useSharedValue(width);
   const left3 = useSharedValue(0);
@@ -140,16 +140,19 @@ const Payment = () => {
           end={{x: 0.5, y: 1.0}}
           colors={['transparent', 'rgba(0,0,0,0.5)']}
           className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-transparent to-black"></LinearGradient>
-        <View className="h-full w-full p-4 pt-12  flex justify-between">
+        <View style={{marginTop: StatusBar.currentHeight}}></View>
+        <View className="h-full w-full p-4 pt-6 pb-12 z-10 flex justify-between">
           <View className="flex w-full flex-row justify-between">
-            <TouchableOpacity className="flex items-center justify-center rounded-full bg-white/20 h-7 w-7 ">
+            <TouchableOpacity
+              onPress={() => navigation.navigate('Home')}
+              className="flex items-center justify-center rounded-full bg-white/20 h-7 w-7 ">
               <Icon name="close" size={18} color="white" />
             </TouchableOpacity>
             <TouchableOpacity className="bg-white/20 h-fit p-1 px-4 rounded-full">
               <Text className="text-white text-sm font-light  ">Restore</Text>
             </TouchableOpacity>
           </View>
-          <Text className="text-white text-3xl font-extrabold">PRO Access</Text>
+          <Text className="text-white text-4xl font-extrabold">PRO Access</Text>
         </View>
       </ImageBackground>
       <View className="flex-1 bg-black ">
@@ -185,7 +188,7 @@ const Payment = () => {
             </Animated.View>
           </View>
         </View>
-        <View className="m-10 flex">
+        <View className="m-10 mt-5">
           <View style={{gap: 12}} className="flex flex-row mb-4 items-end">
             {paymentPrices.map((price, index) => (
               <PriceButton
@@ -197,7 +200,9 @@ const Payment = () => {
               />
             ))}
           </View>
-          <TouchableOpacity className="bg-cyan-600 p-4 rounded-lg">
+          <TouchableOpacity
+            onPress={() => navigation.navigate('Home')}
+            className="bg-cyan-600 p-4 rounded-lg">
             <Text className="text-center font-extrabold text-xl text-white">
               Subscribe
             </Text>
@@ -240,7 +245,7 @@ const PriceButton = ({
       onPress={() => SetSelected(name)}
       className={
         'bg-gray-500/10 flex-1 overflow-hidden  rounded-lg relative ' +
-        (name == 'Monthly' ? 'h-44 ' : 'h-40')
+        (name == 'Monthly' ? 'h-36 ' : 'h-32')
       }>
       <LinearGradient
         start={{x: 0.5, y: 0.25}}

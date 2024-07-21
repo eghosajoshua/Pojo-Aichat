@@ -4,7 +4,6 @@ import {
   Image,
   TouchableOpacity,
   Dimensions,
-  TouchableWithoutFeedback,
   Pressable,
 } from 'react-native';
 import React, {useRef, useState} from 'react';
@@ -14,7 +13,7 @@ import Icon from 'react-native-vector-icons/FontAwesome6';
 
 const {width: screenWidth, height: screenHeight} = Dimensions.get('window');
 
-const Header = () => {
+const Header = ({navigation}: any) => {
   const [headerHeight, setHeaderHeight] = useState<number>(0);
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
 
@@ -26,7 +25,7 @@ const Header = () => {
       }}
       className="flex z-10 flex-row bg-[#0D0D0D] relative justify-between items-center p-5 ">
       <View className="flex flex-row items-center">
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.openDrawer()}>
           <Image
             source={require('../../images/burger.png')}
             className="h-8 w-8"

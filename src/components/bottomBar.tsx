@@ -1,13 +1,5 @@
 import React from 'react';
-import {
-  View,
-  Text,
-  ScrollView,
-  StatusBar,
-  ImageBackground,
-  TouchableOpacity,
-  TextInput,
-} from 'react-native';
+import {View, TouchableOpacity, TextInput} from 'react-native';
 
 //@ts-ignore
 import Icon from 'react-native-vector-icons/FontAwesome6';

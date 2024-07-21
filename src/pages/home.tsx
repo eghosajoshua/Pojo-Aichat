@@ -16,11 +16,12 @@ import Icon from 'react-native-vector-icons/FontAwesome6';
 
 const {width: screenWidth} = Dimensions.get('window');
 
-const Home = () => {
+const Home = ({navigation}: any) => {
   return (
     <View className="bg-gray-300 h-full flex flex-col">
       <StatusBar barStyle="light-content" backgroundColor="#0D0D0D" />
-      <Header />
+      <View style={{marginTop: StatusBar.currentHeight}}></View>
+      <Header navigation={navigation} />
       <ImageBackground
         className="flex-1"
         source={require('../../images/chat-bg.jpg')}>
