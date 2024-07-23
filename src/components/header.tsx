@@ -52,9 +52,11 @@ const Header = ({navigation}: any) => {
               gap: 10,
             }}
             className="bg-[#0D0D0D] flex flex-col  p-2 rounded-lg absolute  right-1 ">
-            <TouchableOpacity className="flex flex-row items-center  bg-gray-500/10 p-3 rounded-lg justify-start">
-              <Icon name="plus" size={24} color="white" />
-              <Text className="text-white ml-3 text-lg  ">New Chat</Text>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('settings')}
+              className="flex flex-row items-center  bg-gray-500/10 p-3 rounded-lg justify-start">
+              <Icon name="gear" size={20} color="white" />
+              <Text className="text-white ml-3 text-lg  ">Settings</Text>
             </TouchableOpacity>
             <TouchableOpacity className="flex flex-row items-center  bg-gray-500/10 p-3 rounded-lg justify-start">
               <Icon name="plus" size={24} color="white" />

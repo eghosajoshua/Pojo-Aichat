@@ -22,7 +22,8 @@ const statusBarHeight = StatusBar.currentHeight || 24;
 const bottomBarHeight = screenHeight - windowHeight - statusBarHeight;
 
 console.log(bottomBarHeight);
-const SideBar = () => {
+
+const SideBar = ({navigation}: any) => {
   const [showFavourites, setShowFavourites] = React.useState(false);
   return (
     <View
@@ -322,6 +323,7 @@ const SideBar = () => {
       {/* hr */}
       <View className="bg-gray-500/70 rounded-full h-1 mb-4"></View>
       <TouchableOpacity
+        onPress={() => navigation.navigate('settings')}
         style={{marginBottom: bottomBarHeight + 30}}
         className="my-4 w-full  flex flex-row justify-between items-center">
         <View className="flex flex-row mr-4 gap-4 flex-1 overflow-hidden items-center">

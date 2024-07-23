@@ -144,7 +144,7 @@ const Payment = ({navigation}: any) => {
         <View className="h-full w-full p-4 pt-6 pb-12 z-10 flex justify-between">
           <View className="flex w-full flex-row justify-between">
             <TouchableOpacity
-              onPress={() => navigation.navigate('Home')}
+              onPress={() => navigation.navigate('home')}
               className="flex items-center justify-center rounded-full bg-white/20 h-7 w-7 ">
               <Icon name="close" size={18} color="white" />
             </TouchableOpacity>
@@ -201,7 +201,7 @@ const Payment = ({navigation}: any) => {
             ))}
           </View>
           <TouchableOpacity
-            onPress={() => navigation.navigate('Home')}
+            onPress={() => navigation.navigate('home')}
             className="bg-cyan-600 p-4 rounded-lg">
             <Text className="text-center font-extrabold text-xl text-white">
               Subscribe
