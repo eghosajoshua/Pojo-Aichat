@@ -8,18 +8,25 @@ import {createDrawerNavigator} from '@react-navigation/drawer';
 import SideBar from './src/components/sidebar';
 import Settings from './src/pages/settings';
 import OnBoarding1 from './src/pages/onboarding1';
+import OnBoarding2 from './src/pages/onboarding2';
+import OnBoarding3 from './src/pages/onboarding3';
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
 
 const App = () => {
-  const payment = false;
   return (
     <NavigationContainer>
       <Stack.Navigator
         initialRouteName="onboard-1"
-        screenOptions={{headerShown: false, gestureEnabled: false}}>
+        screenOptions={{
+          headerShown: false,
+          gestureEnabled: false,
+          animation: 'slide_from_right',
+        }}>
         <Stack.Screen name="onboard-1" component={OnBoarding1} />
+        <Stack.Screen name="onboard-2" component={OnBoarding2} />
+        <Stack.Screen name="onboard-3" component={OnBoarding3} />
         <Stack.Screen
           name="home"
           component={HomeStack}

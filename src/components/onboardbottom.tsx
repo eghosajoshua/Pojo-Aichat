@@ -4,9 +4,11 @@ import React from 'react';
 const OnBoardBottom = ({
   onboardscreen = 1,
   title,
+  navigation,
 }: {
   onboardscreen: number;
   title: String;
+  navigation: any;
 }) => {
   return (
     <View className="p-8">
@@ -32,7 +34,17 @@ const OnBoardBottom = ({
             <View className="w-10 h-2 bg-white rounded-full"></View>
           )}
         </View>
-        <TouchableOpacity className="bg-cyan-600 p-4 rounded-lg">
+        <TouchableOpacity
+          onPress={() => {
+            if (onboardscreen === 3) {
+              navigation.navigate('payment');
+            } else if (onboardscreen === 2) {
+              navigation.navigate('onboard-3');
+            } else if (onboardscreen === 1) {
+              navigation.navigate('onboard-2');
+            }
+          }}
+          className="bg-cyan-600 p-4 rounded-lg">
           <Text className="text-center font-extrabold text-xl text-white">
             Continue
           </Text>

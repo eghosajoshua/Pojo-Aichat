@@ -3,10 +3,9 @@ import {
   Text,
   StatusBar,
   TouchableOpacity,
-  Image,
   ScrollView,
+  Image,
   Dimensions,
-  Pressable,
 } from 'react-native';
 import React from 'react';
 import * as Colors from '../utils/colors';

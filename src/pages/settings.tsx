@@ -11,6 +11,7 @@ import React from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome';
 //@ts-ignore
 import Icon5 from 'react-native-vector-icons/FontAwesome5';
+
 const Settings = ({navigation}: any) => {
   return (
     <View
