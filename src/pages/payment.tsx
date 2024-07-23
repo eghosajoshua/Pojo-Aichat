@@ -18,6 +18,7 @@ import Animated, {
   withSequence,
   withRepeat as repeat,
 } from 'react-native-reanimated';
+import {DarkBlue, LightBlue} from '../utils/colors';
 
 const {width} = Dimensions.get('window');
 
@@ -200,12 +201,17 @@ const Payment = ({navigation}: any) => {
               />
             ))}
           </View>
-          <TouchableOpacity
-            onPress={() => navigation.navigate('home')}
-            className="bg-cyan-600 p-4 rounded-lg">
-            <Text className="text-center font-extrabold text-xl text-white">
-              Subscribe
-            </Text>
+
+          <TouchableOpacity onPress={() => navigation.navigate('home')}>
+            <LinearGradient
+              start={{x: 0.5, y: 0.25}}
+              end={{x: 0.5, y: 1.0}}
+              colors={[LightBlue, DarkBlue]}
+              className="p-4 rounded-lg">
+              <Text className="text-center font-semibold  text-xl text-black">
+                Continue with free trial
+              </Text>
+            </LinearGradient>
           </TouchableOpacity>
           <View className="flex flex-row justify-between py-3">
             <TouchableOpacity>
@@ -229,6 +235,16 @@ const SlidingText = ({text}: {text: string}) => {
   );
 };
 
+/**
+ * A React component that renders a price button with a gradient background and displays the price and name of the plan.
+ *
+ * @param {object} props - The component props.
+ * @param {string} props.name - The name of the plan.
+ * @param {number} props.price - The price of the plan.
+ * @param {boolean} props.selected - Indicates whether the plan is currently selected.
+ * @param {Function} props.SetSelected - A function to set the selected plan.
+ * @returns {JSX.Element} - The price button component.
+ */
 const PriceButton = ({
   name,
   price,
@@ -250,15 +266,21 @@ const PriceButton = ({
       <LinearGradient
         start={{x: 0.5, y: 0.25}}
         end={{x: 0.5, y: 1.0}}
-        colors={['#0891b2', '#7000FF']}
+        colors={[DarkBlue, LightBlue]}
         className="absolute top-0 left-0 w-full h-full"></LinearGradient>
       <View className="h-full">
         <View className="flex-1 items-center justify-center bg-black m-[0.5px] mb-0 rounded-t-lg">
           <Text className="text-white text-3xl  text-center">${price}</Text>
         </View>
         <Text
-          style={selected && {backgroundColor: '#0891b2'}}
-          className="text-white text-xl m-[0.5px] rounded-b-lg mt-0 bg-gray-700 text-center p-1">
+          style={
+            selected && {
+              backgroundColor: LightBlue,
+              color: 'black',
+              fontWeight: 'semibold',
+            }
+          }
+          className="text-white text-xl m-[0.5px] rounded-b-lg mt-0 bg-gray-800 text-center p-1">
           {name}
         </Text>
       </View>

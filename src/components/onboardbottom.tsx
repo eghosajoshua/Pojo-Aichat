@@ -1,5 +1,7 @@
 import {View, Text, TouchableOpacity} from 'react-native';
 import React from 'react';
+import {LightBlue, DarkBlue} from '../utils/colors';
+import LinearGradient from 'react-native-linear-gradient';
 
 const OnBoardBottom = ({
   onboardscreen = 1,
@@ -43,11 +45,16 @@ const OnBoardBottom = ({
             } else if (onboardscreen === 1) {
               navigation.navigate('onboard-2');
             }
-          }}
-          className="bg-cyan-600 p-4 rounded-lg">
-          <Text className="text-center font-extrabold text-xl text-white">
-            Continue
-          </Text>
+          }}>
+          <LinearGradient
+            start={{x: 0.5, y: 0.25}}
+            end={{x: 0.5, y: 1.0}}
+            colors={[LightBlue, DarkBlue]}
+            className="p-4 rounded-lg">
+            <Text className="text-center font-semibold text-xl text-black">
+              Continue
+            </Text>
+          </LinearGradient>
         </TouchableOpacity>
         <Text
           className="text-white text-xs  text-center my-2 "
