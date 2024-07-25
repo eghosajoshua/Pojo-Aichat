@@ -13,8 +13,7 @@ import Icon from 'react-native-vector-icons/FontAwesome6';
 
 const {width: screenWidth, height: screenHeight} = Dimensions.get('window');
 
-const Header = ({navigation}: any) => {
-  const [headerHeight, setHeaderHeight] = useState<number>(0);
+const Header = ({navigation, headerHeight, setHeaderHeight}: any) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
 
   return (

@@ -6,9 +6,13 @@ import Icon from 'react-native-vector-icons/FontAwesome6';
 //@ts-ignore
 import IconIon from 'react-native-vector-icons/Ionicons';
 
-function BottomBar() {
+function BottomBar({setBottomBarHeight}: any) {
   return (
     <View
+      onLayout={e => {
+        const {height} = e.nativeEvent.layout;
+        setBottomBarHeight(height);
+      }}
       style={{gap: 20}}
       className="bg-[#0D0D0D] p-4 flex flex-row justify-between items-center">
       <TouchableOpacity>

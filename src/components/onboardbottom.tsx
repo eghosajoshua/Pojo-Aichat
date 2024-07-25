@@ -1,6 +1,6 @@
 import {View, Text, TouchableOpacity} from 'react-native';
 import React from 'react';
-import {LightBlue, DarkBlue} from '../utils/colors';
+import colors from '../utils/colors';
 import LinearGradient from 'react-native-linear-gradient';
 
 const OnBoardBottom = ({
@@ -49,7 +49,7 @@ const OnBoardBottom = ({
           <LinearGradient
             start={{x: 0.5, y: 0.25}}
             end={{x: 0.5, y: 1.0}}
-            colors={[LightBlue, DarkBlue]}
+            colors={[colors.LightBlue, colors.DarkBlue]}
             className="p-4 rounded-lg">
             <Text className="text-center font-semibold text-xl text-black">
               Continue

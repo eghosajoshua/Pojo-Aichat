@@ -18,7 +18,7 @@ import Animated, {
   withSequence,
   withRepeat as repeat,
 } from 'react-native-reanimated';
-import {DarkBlue, LightBlue} from '../utils/colors';
+import colors from '../utils/colors';
 
 const {width} = Dimensions.get('window');
 
@@ -206,7 +206,7 @@ const Payment = ({navigation}: any) => {
             <LinearGradient
               start={{x: 0.5, y: 0.25}}
               end={{x: 0.5, y: 1.0}}
-              colors={[LightBlue, DarkBlue]}
+              colors={[colors.LightBlue, colors.DarkBlue]}
               className="p-4 rounded-lg">
               <Text className="text-center font-semibold  text-xl text-black">
                 Continue with free trial
@@ -266,7 +266,7 @@ const PriceButton = ({
       <LinearGradient
         start={{x: 0.5, y: 0.25}}
         end={{x: 0.5, y: 1.0}}
-        colors={[DarkBlue, LightBlue]}
+        colors={[colors.DarkBlue, colors.LightBlue]}
         className="absolute top-0 left-0 w-full h-full"></LinearGradient>
       <View className="h-full">
         <View className="flex-1 items-center justify-center bg-black m-[0.5px] mb-0 rounded-t-lg">
@@ -275,7 +275,7 @@ const PriceButton = ({
         <Text
           style={
             selected && {
-              backgroundColor: LightBlue,
+              backgroundColor: colors.LightBlue,
               color: 'black',
               fontWeight: 'semibold',
             }
