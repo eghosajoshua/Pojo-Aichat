@@ -27,6 +27,55 @@ const Home = ({navigation}: any) => {
   const [headerHeight, setHeaderHeight] = useState<number>(0);
   const [bottomBarHeight, setBottomBarHeight] = useState<number>(0);
   const [selectedText, setSelectedText] = useState('');
+  const [chatData, setChatData] = useState(
+    [
+      {role: 'user', message: 'first'},
+      {
+        role: 'bot',
+        message: 'hmm',
+      },
+      {role: 'user', message: 'hello'},
+      {
+        role: 'bot',
+        message: 'hmmm',
+      },
+      {role: 'user', message: 'hello'},
+      {
+        role: 'bot',
+        message: 'hmmm vngvnaegv agnng reggrvnerv aneo  ivnanvoapvan',
+      },
+      {role: 'user', message: 'hello'},
+      {
+        role: 'bot',
+        message: 'hmmm',
+      },
+      {role: 'user', message: 'hello'},
+      {
+        role: 'bot',
+        message: 'hmmm',
+      },
+      {role: 'user', message: 'hello'},
+      {
+        role: 'bot',
+        message: 'hmmm vngvnaegv agnng reggrvnerv aneo  ivnanvoapvan',
+      },
+      {role: 'user', message: 'hello'},
+      {
+        role: 'bot',
+        message: 'hmmm',
+      },
+      {role: 'user', message: 'hello'},
+      {
+        role: 'bot',
+        message: 'hmmm',
+      },
+      {role: 'user', message: 'hello'},
+      {
+        role: 'bot',
+        message: 'last',
+      },
+    ].reverse(),
+  );
   const scrollViewRef = useRef(null);
 
   return (
@@ -38,6 +87,7 @@ const Home = ({navigation}: any) => {
       />
       <View className="bg-gray-300 h-full flex flex-col">
         <View style={{marginTop: StatusBar.currentHeight}}></View>
+        <View></View>
         <Header
           navigation={navigation}
           headerHeight={headerHeight}
@@ -48,64 +98,25 @@ const Home = ({navigation}: any) => {
             className="flex-1"
             source={require('../../images/chat-bg.jpg')}>
             <View className="absolute top-0 left-0 w-full h-full bg-black/50"></View>
-            <View className=" bg-green-300 p-2">
+            {showOptions && (
+              <ChatOptions
+                setShowOptions={setShowOptions}
+                optionPos={optionPos}
+                headerHeight={headerHeight}
+                bottomBarHeight={bottomBarHeight}
+                selectedText={selectedText}
+              />
+            )}
+            <View className="p-2">
               <FlatList
                 ref={scrollViewRef}
-                className="bg-red-400"
-                data={[
-                  {role: 'user', message: 'hello'},
-                  {
-                    role: 'bot',
-                    message: 'hmmm',
-                  },
-                  {role: 'user', message: 'hello'},
-                  {
-                    role: 'bot',
-                    message: 'hmmm',
-                  },
-                  {role: 'user', message: 'hello'},
-                  {
-                    role: 'bot',
-                    message:
-                      'hmmm vngvnaegv agnng reggrvnerv aneo  ivnanvoapvan',
-                  },
-                  {role: 'user', message: 'hello'},
-                  {
-                    role: 'bot',
-                    message: 'hmmm',
-                  },
-                  {role: 'user', message: 'hello'},
-                  {
-                    role: 'bot',
-                    message: 'hmmm',
-                  },
-                  {role: 'user', message: 'hello'},
-                  {
-                    role: 'bot',
-                    message:
-                      'hmmm vngvnaegv agnng reggrvnerv aneo  ivnanvoapvan',
-                  },
-                  {role: 'user', message: 'hello'},
-                  {
-                    role: 'bot',
-                    message: 'hmmm',
-                  },
-                  {role: 'user', message: 'hello'},
-                  {
-                    role: 'bot',
-                    message: 'hmmm',
-                  },
-                  {role: 'user', message: 'hello'},
-                  {
-                    role: 'bot',
-                    message:
-                      'hmmm vngvnaegv agnng reggrvnerv aneo  ivnanvoapvan',
-                  },
-                ].reverse()}
+                contentContainerStyle={{gap: 20}}
+                data={chatData}
                 inverted={true}
-                renderItem={({item}) =>
+                renderItem={({item, index}) =>
                   item.message.indexOf('https') < 0 ? (
                     <ChatText
+                      key={index}
                       ai={item.role == 'bot' && true}
                       setShowOptions={setShowOptions}
                       setOptionPos={setOptionPos}
@@ -114,6 +125,7 @@ const Home = ({navigation}: any) => {
                     />
                   ) : (
                     <View
+                      key={index}
                       style={{alignSelf: 'flex-end', width: 'auto'}}
                       className=" rounded-3xl  rounded-tl-none">
                       <Image
@@ -130,19 +142,11 @@ const Home = ({navigation}: any) => {
               />
             </View>
           </ImageBackground>
-          {showOptions && (
-            <ChatOptions
-              setShowOptions={setShowOptions}
-              optionPos={optionPos}
-              headerHeight={headerHeight}
-              bottomBarHeight={bottomBarHeight}
-              selectedText={selectedText}
-            />
-          )}
         </View>
         <BottomBar
           scrollViewRef={scrollViewRef}
           setBottomBarHeight={setBottomBarHeight}
+          setChatData={setChatData}
         />
       </View>
     </>

@@ -20,7 +20,7 @@ const ChatText = ({
     <View className=" w-full flex flex-col">
       <TouchableOpacity
         activeOpacity={0.6}
-        onLongPress={e => {
+        onPress={e => {
           setOptionPos({x: e.nativeEvent.pageX, y: e.nativeEvent.pageY});
           setShowOptions(true);
           setSelectedText(text);

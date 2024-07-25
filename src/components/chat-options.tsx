@@ -52,7 +52,7 @@ const ChatOptions = ({
         onPress={() => {
           setShowOptions(false);
         }}
-        className="w-full h-full bg-black/50 top-0 left-0 absolute"></Pressable>
+        className="w-full h-full  top-0 left-0 absolute"></Pressable>
       <View
         onLayout={handleLayout}
         style={{
