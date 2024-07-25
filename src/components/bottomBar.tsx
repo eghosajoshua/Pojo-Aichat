@@ -1,12 +1,20 @@
-import React from 'react';
-import {View, TouchableOpacity, TextInput} from 'react-native';
+import React, {useEffect, useRef, useState} from 'react';
+import {View, TouchableOpacity, TextInput, Keyboard} from 'react-native';
 
 //@ts-ignore
 import Icon from 'react-native-vector-icons/FontAwesome6';
 //@ts-ignore
 import IconIon from 'react-native-vector-icons/Ionicons';
 
-function BottomBar({setBottomBarHeight}: any) {
+function BottomBar({setBottomBarHeight, scrollViewRef}: any) {
+  const [inputValue, setInputValue] = useState('');
+
+  const handleSubmit = () => {
+    setInputValue('');
+    Keyboard.dismiss();
+    scrollViewRef.current.scrollToEnd({animated: true});
+  };
+
   return (
     <View
       onLayout={e => {
@@ -22,6 +30,12 @@ function BottomBar({setBottomBarHeight}: any) {
         <Icon name="image" size={24} color="white" />
       </TouchableOpacity>
       <TextInput
+        onChangeText={text => setInputValue(text)}
+        value={inputValue}
+        onFocus={() => {
+          scrollViewRef.current.scrollToEnd({animated: false});
+        }}
+        keyboardAppearance="dark"
         multiline={true}
         placeholder="Enter message"
         placeholderTextColor="gray"
@@ -30,7 +44,7 @@ function BottomBar({setBottomBarHeight}: any) {
       <TouchableOpacity>
         <Icon name="microphone" size={24} color="white" />
       </TouchableOpacity>
-      <TouchableOpacity>
+      <TouchableOpacity onPress={handleSubmit}>
         <IconIon name="send" size={24} color="white" />
       </TouchableOpacity>
     </View>

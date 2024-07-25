@@ -17,7 +17,11 @@ const Settings = ({navigation}: any) => {
     <View
       className="flex h-full bg-black"
       style={{paddingTop: StatusBar.currentHeight}}>
-      <StatusBar barStyle="light-content" backgroundColor={'black'} />
+      <StatusBar
+        translucent
+        barStyle="light-content"
+        backgroundColor={'black'}
+      />
       {/* header */}
       <View className=" p-2 flex flex-row items-center gap-2">
         <TouchableOpacity

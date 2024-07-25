@@ -6,7 +6,7 @@ import {
   Dimensions,
   Pressable,
 } from 'react-native';
-import React, {useRef, useState} from 'react';
+import React, {useCallback, useRef, useState} from 'react';
 //@ts-ignore
 import Icon from 'react-native-vector-icons/FontAwesome6';
 //@ts-ignore
@@ -16,12 +16,14 @@ const {width: screenWidth, height: screenHeight} = Dimensions.get('window');
 const Header = ({navigation, headerHeight, setHeaderHeight}: any) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
 
+  const handleLayout = useCallback((e: any) => {
+    let {height} = e.nativeEvent.layout;
+    setHeaderHeight(height);
+  }, []);
+
   return (
     <View
-      onLayout={e => {
-        let {height} = e.nativeEvent.layout;
-        setHeaderHeight(height);
-      }}
+      onLayout={handleLayout}
       className="flex z-10 flex-row bg-[#0D0D0D] relative justify-between items-center p-5 ">
       <View className="flex flex-row items-center">
         <TouchableOpacity onPress={() => navigation.openDrawer()}>

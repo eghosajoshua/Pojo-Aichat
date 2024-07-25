@@ -8,7 +8,7 @@ import {
   Dimensions,
 } from 'react-native';
 import React from 'react';
-import * as Colors from '../utils/colors';
+import colors from '../utils/colors';
 import {TextInput} from 'react-native-gesture-handler';
 //@ts-ignore
 import Icon from 'react-native-vector-icons/FontAwesome6';
@@ -20,15 +20,13 @@ const {height: windowHeight} = Dimensions.get('window');
 const statusBarHeight = StatusBar.currentHeight || 24;
 const bottomBarHeight = screenHeight - windowHeight - statusBarHeight;
 
-console.log(bottomBarHeight);
-
 const SideBar = ({navigation}: any) => {
   const [showFavourites, setShowFavourites] = React.useState(false);
   return (
     <View
       style={{
         marginTop: StatusBar.currentHeight,
-        backgroundColor: Colors.DarkGray,
+        backgroundColor: colors.DarkGray,
       }}
       className="h-full w-full flex flex-col p-4 ">
       <Text className="text-2xl text-white ">History</Text>

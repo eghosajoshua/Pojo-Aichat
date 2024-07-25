@@ -1,46 +1,46 @@
-import {
-  View,
-  Text,
-  TouchableWithoutFeedback,
-  GestureResponderEvent,
-  Pressable,
-} from 'react-native';
+import {View, Text, TouchableOpacity} from 'react-native';
 import {useState} from 'react';
 import ChatOptions from './chat-options';
 import colors from '../utils/colors';
-import {TouchableOpacity} from 'react-native-gesture-handler';
 
 const ChatText = ({
   ai = false,
   setShowOptions,
   setOptionPos,
+  text,
+  setSelectedText,
 }: {
   ai?: boolean;
   setShowOptions?: any;
   setOptionPos?: any;
+  text: string;
+  setSelectedText: any;
 }) => {
   return (
     <View className=" w-full flex flex-col">
-      <Pressable
+      <TouchableOpacity
+        activeOpacity={0.6}
         onLongPress={e => {
           setOptionPos({x: e.nativeEvent.pageX, y: e.nativeEvent.pageY});
           setShowOptions(true);
+          setSelectedText(text);
         }}>
-        <Text
+        <View
           style={
             ai
-              ? {alignSelf: 'flex-start'}
-              : {alignSelf: 'flex-end', backgroundColor: colors.DarkBlue}
+              ? {borderTopLeftRadius: 0, alignSelf: 'flex-start'}
+              : {
+                  backgroundColor: colors.DarkBlue,
+                  borderTopRightRadius: 0,
+                  alignSelf: 'flex-end',
+                }
           }
-          className="text-slate-200 w-fit max-w-[90%] p-4 text-lg rounded-3xl rounded-tl-none bg-[#0D0D0D] leading-6">
-          Lorem ipsum dolor Lorem ipsum dolor sit amet consectetur, adipisicing
-          elit. Repellendus ut ipsam, odio consectetur, quidem accusamus hic nam
-          provident perferendis quos molestias ullam, quae nulla repellat ipsa
-          deserunt debitis atque minus voluptates enim earum iste in eos.
-          Exercitationem corrupti eligendi culpapsam! Distinctio accusamus quia
-          necessitatibus, animi at quibusdam ea? Aperiam?
-        </Text>
-      </Pressable>
+          className="bg-[#0D0D0D] rounded-3xl w-fit max-w-[90%] ">
+          <Text className="text-slate-200 w-fit p-4 text-lg  leading-6">
+            {text}
+          </Text>
+        </View>
+      </TouchableOpacity>
     </View>
   );
 };

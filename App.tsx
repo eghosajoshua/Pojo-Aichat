@@ -3,7 +3,7 @@ import Payment from './src/pages/payment';
 import Home from './src/pages/home';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {NavigationContainer} from '@react-navigation/native';
-import * as Colors from './src/utils/colors';
+import colors from './src/utils/colors';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import SideBar from './src/components/sidebar';
 import Settings from './src/pages/settings';
@@ -18,7 +18,7 @@ const App = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="onboard-1"
+        initialRouteName="home"
         screenOptions={{
           headerShown: false,
           gestureEnabled: false,
@@ -30,7 +30,7 @@ const App = () => {
         <Stack.Screen
           name="home"
           component={HomeStack}
-          options={{navigationBarColor: Colors.DarkGray}}
+          options={{navigationBarColor: colors.DarkGray, headerShown: false}}
         />
         <Stack.Screen
           name="payment"
