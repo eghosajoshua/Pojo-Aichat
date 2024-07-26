@@ -1,7 +1,7 @@
-import {View, Text, TouchableOpacity} from 'react-native';
-import {useState} from 'react';
-import ChatOptions from './chat-options';
+import {View, TouchableOpacity} from 'react-native';
 import colors from '../utils/colors';
+import Markdown from 'react-native-markdown-display';
+import markdownToTxt from 'markdown-to-txt';
 
 const ChatText = ({
   ai = false,
@@ -23,22 +23,33 @@ const ChatText = ({
         onPress={e => {
           setOptionPos({x: e.nativeEvent.pageX, y: e.nativeEvent.pageY});
           setShowOptions(true);
-          setSelectedText(text);
+          setSelectedText(markdownToTxt(text));
         }}>
         <View
           style={
             ai
-              ? {borderTopLeftRadius: 0, alignSelf: 'flex-start'}
+              ? {
+                  borderTopLeftRadius: 0,
+                  alignSelf: 'flex-start',
+                  paddingVertical: 10,
+                }
               : {
                   backgroundColor: colors.DarkBlue,
                   borderTopRightRadius: 0,
                   alignSelf: 'flex-end',
                 }
           }
-          className="bg-[#0D0D0D] rounded-3xl w-fit max-w-[90%] ">
-          <Text className="text-slate-200 w-fit p-4 text-lg  leading-6">
+          className="bg-[#0D0D0D] rounded-2xl px-4 w-fit max-w-[98%] ">
+          <Markdown
+            style={{
+              body: {
+                color: 'white',
+                fontSize: 18,
+                lineHeight: 30,
+              },
+            }}>
             {text}
-          </Text>
+          </Markdown>
         </View>
       </TouchableOpacity>
     </View>

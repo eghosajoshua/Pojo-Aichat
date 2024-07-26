@@ -15,6 +15,8 @@ const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
 
 const App = () => {
+  // console.log(Gemini);
+
   return (
     <NavigationContainer>
       <Stack.Navigator

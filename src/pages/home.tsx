@@ -1,14 +1,9 @@
 import {
   View,
-  Text,
-  ScrollView,
   StatusBar,
   ImageBackground,
-  TouchableOpacity,
   Dimensions,
   Image,
-  Pressable,
-  KeyboardAvoidingView,
   FlatList,
 } from 'react-native';
 import Header from '../components/header';
@@ -27,55 +22,9 @@ const Home = ({navigation}: any) => {
   const [headerHeight, setHeaderHeight] = useState<number>(0);
   const [bottomBarHeight, setBottomBarHeight] = useState<number>(0);
   const [selectedText, setSelectedText] = useState('');
-  const [chatData, setChatData] = useState(
-    [
-      {role: 'user', message: 'first'},
-      {
-        role: 'bot',
-        message: 'hmm',
-      },
-      {role: 'user', message: 'hello'},
-      {
-        role: 'bot',
-        message: 'hmmm',
-      },
-      {role: 'user', message: 'hello'},
-      {
-        role: 'bot',
-        message: 'hmmm vngvnaegv agnng reggrvnerv aneo  ivnanvoapvan',
-      },
-      {role: 'user', message: 'hello'},
-      {
-        role: 'bot',
-        message: 'hmmm',
-      },
-      {role: 'user', message: 'hello'},
-      {
-        role: 'bot',
-        message: 'hmmm',
-      },
-      {role: 'user', message: 'hello'},
-      {
-        role: 'bot',
-        message: 'hmmm vngvnaegv agnng reggrvnerv aneo  ivnanvoapvan',
-      },
-      {role: 'user', message: 'hello'},
-      {
-        role: 'bot',
-        message: 'hmmm',
-      },
-      {role: 'user', message: 'hello'},
-      {
-        role: 'bot',
-        message: 'hmmm',
-      },
-      {role: 'user', message: 'hello'},
-      {
-        role: 'bot',
-        message: 'last',
-      },
-    ].reverse(),
-  );
+  const [chatData, setChatData] = useState<
+    Array<{role: string; parts: {text: string}[]}>
+  >([]);
   const scrollViewRef = useRef(null);
 
   return (
@@ -114,13 +63,13 @@ const Home = ({navigation}: any) => {
                 data={chatData}
                 inverted={true}
                 renderItem={({item, index}) =>
-                  item.message.indexOf('https') < 0 ? (
+                  item.parts[0].text.indexOf('https') < 0 ? (
                     <ChatText
                       key={index}
-                      ai={item.role == 'bot' && true}
+                      ai={item.role === 'model'}
                       setShowOptions={setShowOptions}
                       setOptionPos={setOptionPos}
-                      text={item.message}
+                      text={item.parts[0].text}
                       setSelectedText={setSelectedText}
                     />
                   ) : (
@@ -147,6 +96,7 @@ const Home = ({navigation}: any) => {
           scrollViewRef={scrollViewRef}
           setBottomBarHeight={setBottomBarHeight}
           setChatData={setChatData}
+          chatData={chatData}
         />
       </View>
     </>
