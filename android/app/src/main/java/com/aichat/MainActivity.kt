@@ -1,4 +1,4 @@
-package com.aichat
+package com.xemoai.aichat
 
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate

@@ -27,7 +27,7 @@ function BottomBar({
   const [isRecording, setIsRecording] = useState(false);
   const [loadingResponse, setLoadingResponse] = useState(false);
   const [uploadedImageUri, setUploadedImageUri] = useState(
-    'file:///data/user/0/com.aichat/cache/rn_image_picker_lib_temp_fe836f13-8180-417a-920b-ea9ee179617f.jpg',
+    'file:///data/user/0/com.xemoai.aichat/cache/rn_image_picker_lib_temp_fe836f13-8180-417a-920b-ea9ee179617f.jpg',
   );
   const genAi = new GoogleGenerativeAI(env.GEMINI_API_KEY);
   const model = genAi.getGenerativeModel({model: 'gemini-1.5-flash'});

@@ -13,10 +13,11 @@ import Icon from 'react-native-vector-icons/FontAwesome6';
 import ChatText from '../components/chat-text';
 import ChatOptions from '../components/chat-options';
 import {useRef, useState} from 'react';
+import {User} from '@supabase/supabase-js';
 
 const {width: screenWidth} = Dimensions.get('window');
 
-const Home = ({navigation}: any) => {
+const Home = ({navigation, user}: {navigation: any; user: User | null}) => {
   const [showOptions, setShowOptions] = useState(false);
   const [optionPos, setOptionPos] = useState({x: 0, y: 0});
   const [headerHeight, setHeaderHeight] = useState<number>(0);

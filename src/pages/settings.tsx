@@ -5,14 +5,38 @@ import {
   TouchableOpacity,
   ScrollView,
   Image,
+  ToastAndroid,
+  Platform,
 } from 'react-native';
 import React from 'react';
 //@ts-ignore
 import Icon from 'react-native-vector-icons/FontAwesome';
 //@ts-ignore
 import Icon5 from 'react-native-vector-icons/FontAwesome5';
+import {User} from '@supabase/supabase-js';
+import {supabase} from '../utils/supabase';
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
 
-const Settings = ({navigation}: any) => {
+const regex = /\([a-zA-Z]+\)/g;
+
+const Settings = ({navigation, user}: {navigation: any; user: User | null}) => {
+  const handleSignOut = async () => {
+    await GoogleSignin.signOut();
+    const {error} = await supabase.auth.signOut();
+    if (error === null) {
+      //sign out
+      navigation.navigate('login');
+    } else {
+      if (Platform.OS == 'android') {
+        ToastAndroid.showWithGravity(
+          'something went wrong',
+          ToastAndroid.SHORT,
+          ToastAndroid.CENTER,
+        );
+      }
+    }
+  };
+
   return (
     <View
       className="flex h-full bg-black"
@@ -38,17 +62,20 @@ const Settings = ({navigation}: any) => {
         {/* user */}
         <View className="flex flex-row p-4" style={{gap: 15}}>
           <Image
-            source={require('../../images/user.jpg')}
+            source={{uri: user?.user_metadata.avatar_url}}
             className="rounded-full h-14 w-14"
           />
           <View>
-            <Text className="text-white text-xl">Eghosa Joshua</Text>
-            <Text className="text-gray-300 text-lg">Eghosajosh@gmail.com</Text>
+            <Text className="text-white text-xl">
+              {user?.user_metadata.name.toString().replace(regex, '')}
+            </Text>
+            <Text className="text-gray-300 text-lg">{user?.email}</Text>
           </View>
         </View>
         {/* setting list */}
         <View className="flex flex-col px-4" style={{gap: 15}}>
           <TouchableOpacity
+            onPress={() => navigation.navigate('payment')}
             className="flex flex-row items-center p-4"
             style={{gap: 15}}>
             <Icon name="star" size={24} color="white" />
@@ -98,6 +125,7 @@ const Settings = ({navigation}: any) => {
             </View>
           </TouchableOpacity>
           <TouchableOpacity
+            onPress={handleSignOut}
             className="flex flex-row items-center p-4 "
             style={{gap: 15}}>
             <Icon name="sign-out" size={24} color="#ff7d7d" />

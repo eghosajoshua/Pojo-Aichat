@@ -14,14 +14,18 @@ import {TextInput} from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/FontAwesome6';
 //@ts-ignore
 import Icon2 from 'react-native-vector-icons/FontAwesome';
+import {User} from '@supabase/supabase-js';
+import {supabase} from '../utils/supabase';
 
 const {height: screenHeight} = Dimensions.get('screen');
 const {height: windowHeight} = Dimensions.get('window');
 const statusBarHeight = StatusBar.currentHeight || 24;
 const bottomBarHeight = screenHeight - windowHeight - statusBarHeight;
+const regex = /\([a-zA-Z]+\)/g;
 
-const SideBar = ({navigation}: any) => {
+const SideBar = ({navigation, user}: {navigation: any; user: User | null}) => {
   const [showFavourites, setShowFavourites] = React.useState(false);
+
   return (
     <View
       style={{
@@ -326,10 +330,10 @@ const SideBar = ({navigation}: any) => {
         <View className="flex flex-row mr-4 gap-4 flex-1 overflow-hidden items-center">
           <Image
             className="h-12 w-12 rounded-full"
-            source={require('../../images/user.jpg')}
+            source={{uri: user?.user_metadata.avatar_url}}
           />
           <Text numberOfLines={1} className="text-white   text-xl flex-1   ">
-            Eghosa Joshua
+            {user?.user_metadata.name.replace(regex, '')}
           </Text>
         </View>
         <Icon name="chevron-right" size={20} color="white" />
