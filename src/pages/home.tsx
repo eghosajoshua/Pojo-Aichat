@@ -14,6 +14,8 @@ import ChatText from '../components/chat-text';
 import ChatOptions from '../components/chat-options';
 import {useRef, useState} from 'react';
 import {User} from '@supabase/supabase-js';
+import {Text} from 'react-native';
+import colors from '../utils/colors';
 
 const {width: screenWidth} = Dimensions.get('window');
 
@@ -64,7 +66,7 @@ const Home = ({navigation, user}: {navigation: any; user: User | null}) => {
                 data={chatData}
                 inverted={true}
                 renderItem={({item, index}) =>
-                  item.parts[0].text.indexOf('https') < 0 ? (
+                  item.parts[0].text.indexOf('file:') < 0 ? (
                     <ChatText
                       key={index}
                       ai={item.role === 'model'}
@@ -80,12 +82,18 @@ const Home = ({navigation, user}: {navigation: any; user: User | null}) => {
                       className=" rounded-3xl  rounded-tl-none">
                       <Image
                         style={{
-                          maxWidth: screenWidth * 0.7,
-                          maxHeight: screenWidth * 0.7,
+                          width: screenWidth * 0.7,
+                          alignSelf: 'flex-end',
+                          display: 'flex',
+                          justifyContent: 'flex-end',
+                          height: screenWidth * 0.7,
+                          objectFit: 'contain',
+                          backgroundColor: colors.DarkBlue,
                         }}
                         className="rounded-lg "
-                        source={require('../../images/payment_potrait.png')}
+                        source={{uri: item.parts[0].text}}
                       />
+                      <Text>{item.parts[0].text}</Text>
                     </View>
                   )
                 }

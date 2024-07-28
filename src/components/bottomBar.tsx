@@ -26,11 +26,76 @@ function BottomBar({
   const [showSendBtn, setShowSendBtn] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const [loadingResponse, setLoadingResponse] = useState(false);
-  const [uploadedImageUri, setUploadedImageUri] = useState(
-    'file:///data/user/0/com.xemoai.aichat/cache/rn_image_picker_lib_temp_fe836f13-8180-417a-920b-ea9ee179617f.jpg',
-  );
+
+  // Array<{role: string; parts: {text: string}[]}>
+
   const genAi = new GoogleGenerativeAI(env.GEMINI_API_KEY);
   const model = genAi.getGenerativeModel({model: 'gemini-1.5-flash'});
+
+  const handleImagePick = () => {
+    launchImageLibrary(
+      {mediaType: 'photo', includeBase64: true},
+      (response: any) => {
+        if (response.assets && response.assets.length > 0) {
+          const {uri, base64, type} = response.assets[0];
+          // setUploadedImageUri(prev => [...prev, uri]);
+          setChatData((prev: any) => [
+            {role: 'user', parts: [{text: uri}]},
+            ...prev,
+          ]);
+
+          ImagePrompt([
+            {
+              inlineData: {
+                data: base64,
+                mimeType: type,
+              },
+            },
+          ]);
+        }
+      },
+    );
+  };
+
+  const handleCameraPick = () => {
+    launchCamera({mediaType: 'photo', includeBase64: true}, (response: any) => {
+      if (response.assets && response.assets.length > 0) {
+        const {uri, base64, type} = response.assets[0];
+        // setUploadedImageUri(prev => [...prev, uri]);
+        setChatData((prev: any) => [
+          {role: 'user', parts: [{text: uri}]},
+          ...prev,
+        ]);
+
+        ImagePrompt([
+          {
+            inlineData: {
+              data: base64,
+              mimeType: type,
+            },
+          },
+        ]);
+      }
+    });
+  };
+
+  const ImagePrompt = async (imageParts: any) => {
+    try {
+      const generatedContent = await model.generateContent([
+        'tell me about this image',
+        ...imageParts,
+      ]);
+      const restText = generatedContent.response.text();
+      console.log(generatedContent.response.text());
+
+      setChatData((prev: any) => [
+        {role: 'model', parts: [{text: restText}]},
+        ...prev,
+      ]);
+    } catch (e) {
+      console.error(e);
+    }
+  };
 
   const handleSubmit = async () => {
     let history = [];
@@ -39,7 +104,7 @@ function BottomBar({
     setShowSendBtn(false);
     chatData.length > 0 &&
       scrollViewRef.current.scrollToIndex({index: 0, animated: true});
-    history = chatData;
+    history = [...chatData];
     setChatData((prev: any) => [
       {role: 'user', parts: [{text: message}]},
       ...prev,
@@ -143,14 +208,6 @@ function BottomBar({
     };
   }, []);
 
-  const handleImagePick = () => {
-    launchImageLibrary({mediaType: 'photo'}, (response: any) => {
-      if (response.assets && response.assets.length > 0) {
-        setUploadedImageUri(response.assets[0].uri);
-      }
-    });
-  };
-
   return (
     <>
       <View
@@ -160,7 +217,7 @@ function BottomBar({
         }}
         style={{gap: 20}}
         className="bg-[#0D0D0D] p-4 flex flex-row justify-between items-center">
-        <TouchableOpacity>
+        <TouchableOpacity onPress={handleCameraPick}>
           <Icon name="camera" size={24} color="white" />
         </TouchableOpacity>
         <TouchableOpacity onPress={handleImagePick}>
