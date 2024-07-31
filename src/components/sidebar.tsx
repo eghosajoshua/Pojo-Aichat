@@ -41,6 +41,7 @@ const SideBar = ({navigation}: {navigation: any}) => {
           console.log(data, error, 'history');
           if (error === null) {
             // setChatHistory(data);
+
             dispatch({type: ACTIONS.SET_CHAT_HISTORY, payload: data});
           }
         } else {
@@ -63,6 +64,26 @@ const SideBar = ({navigation}: {navigation: any}) => {
       if (error === null) {
         dispatch({type: ACTIONS.SET_CURRENT_CHAT_ID, payload: id});
         dispatch({type: ACTIONS.SET_CHAT_DATA, payload: data.chats});
+      } else {
+        console.error(error, 'nawa');
+      }
+    } catch (e) {
+      console.log('errrr', e);
+    }
+  };
+
+  const handleFavourite = async (id: any, favourite: Boolean) => {
+    try {
+      const {error} = await supabase
+        .from('chat_history')
+        .update({favourite: !favourite})
+        .eq('id', id)
+        .single();
+      if (error === null) {
+        dispatch({
+          type: ACTIONS.EDIT_CHAT_HISTORY_FAVOURITE,
+          payload: {favourite: !favourite, id: id},
+        });
       } else {
         console.error(error, 'nawa');
       }
@@ -110,19 +131,32 @@ const SideBar = ({navigation}: {navigation: any}) => {
             contentContainerStyle={{gap: 20}}
             className="mt-2  flex flex-col max-h-52 ">
             {/* list */}
-            <View className="flex flex-row gap-5  items-center">
-              <TouchableOpacity>
-                <Icon2 name="star" size={18} color="yellow" />
-              </TouchableOpacity>
-              <TouchableOpacity className="flex-1">
-                <Text
-                  numberOfLines={1}
-                  ellipsizeMode="tail"
-                  className="text-white text-lg ">
-                  Lorem ipsum dolor sit dsadid!
-                </Text>
-              </TouchableOpacity>
-            </View>
+            {chatHistory.map((history: any) => {
+              if (history.favourite) {
+                return (
+                  <View
+                    key={history.id}
+                    className="flex flex-row gap-5  items-center">
+                    <TouchableOpacity
+                      onPress={() =>
+                        handleFavourite(history.id, history.favourite)
+                      }>
+                      <Icon2 name="star" size={18} color="yellow" />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={() => handleSelectChat(history.id)}
+                      className="flex-1">
+                      <Text
+                        numberOfLines={1}
+                        ellipsizeMode="tail"
+                        className="text-white text-lg ">
+                        {history.title}
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                );
+              }
+            })}
           </ScrollView>
         )}
       </View>
@@ -138,7 +172,10 @@ const SideBar = ({navigation}: {navigation: any}) => {
               <View
                 key={history.id}
                 className="flex flex-row gap-5  items-center">
-                <TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() =>
+                    handleFavourite(history.id, history.favourite)
+                  }>
                   <Icon2 name="star-o" size={18} color="white" />
                 </TouchableOpacity>
                 <TouchableOpacity

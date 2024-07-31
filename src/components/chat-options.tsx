@@ -6,7 +6,7 @@ import {
   StatusBar,
   Dimensions,
 } from 'react-native';
-import {useState, useCallback, useMemo, useEffect} from 'react';
+import {useState, useCallback, useEffect} from 'react';
 //@ts-ignore
 import Icon from 'react-native-vector-icons/FontAwesome6';
 import Clipboard from '@react-native-clipboard/clipboard';

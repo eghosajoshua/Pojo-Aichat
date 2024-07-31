@@ -1,17 +1,10 @@
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {
   View,
   TouchableOpacity,
   TextInput,
   Platform,
   ToastAndroid,
-  Image,
 } from 'react-native';
 import Voice from '@react-native-voice/voice';
 //@ts-ignore
@@ -42,6 +35,10 @@ function BottomBar({setBottomBarHeight, scrollViewRef}: any) {
   useEffect(() => {
     const uploadChatData = async () => {
       if (chatData.length == 0) return;
+      let chatTitle = chatData[chatData.length - 1].parts[0].text.substring(
+        0,
+        15,
+      );
       try {
         if (currentChatId === null) {
           //create new chat history
@@ -50,18 +47,18 @@ function BottomBar({setBottomBarHeight, scrollViewRef}: any) {
             .insert({
               user_id: user.id,
               chats: chatData,
-              title: chatData[chatData.length - 1].parts[0].text.substring(
-                0,
-                15,
-              ),
+              title: chatTitle,
             })
             .select('id')
             .single();
 
-          console.log(data?.id, 'upload id');
           dispatch({
             type: ACTIONS.SET_CURRENT_CHAT_ID,
             payload: data?.id,
+          });
+          dispatch({
+            type: ACTIONS.UPDATE_CHAT_HISTORY,
+            payload: {favourite: false, id: data?.id, title: chatTitle},
           });
         } else {
           //update chat history
@@ -86,24 +83,24 @@ function BottomBar({setBottomBarHeight, scrollViewRef}: any) {
         if (response.assets && response.assets.length > 0) {
           const {uri, base64, type} = response.assets[0];
 
-          const newChatData = [
-            {role: 'user', parts: [{text: uri}]},
-            ...chatData,
-          ];
+          let newChatData = [{role: 'user', parts: [{text: uri}]}, ...chatData];
 
           dispatch({
             type: ACTIONS.SET_CHAT_DATA,
             payload: newChatData,
           });
 
-          ImagePrompt([
-            {
-              inlineData: {
-                data: base64,
-                mimeType: type,
+          ImagePrompt(
+            [
+              {
+                inlineData: {
+                  data: base64,
+                  mimeType: type,
+                },
               },
-            },
-          ]);
+            ],
+            newChatData,
+          );
         }
       },
     );
@@ -122,19 +119,22 @@ function BottomBar({setBottomBarHeight, scrollViewRef}: any) {
           payload: newChatData,
         });
 
-        ImagePrompt([
-          {
-            inlineData: {
-              data: base64,
-              mimeType: type,
+        ImagePrompt(
+          [
+            {
+              inlineData: {
+                data: base64,
+                mimeType: type,
+              },
             },
-          },
-        ]);
+          ],
+          newChatData,
+        );
       }
     });
   };
 
-  const ImagePrompt = async (imageParts: any) => {
+  const ImagePrompt = async (imageParts: any, newChatData: any) => {
     try {
       const generatedContent = await model.generateContent([
         'tell me about this image',
@@ -143,14 +143,14 @@ function BottomBar({setBottomBarHeight, scrollViewRef}: any) {
       const restText = generatedContent.response.text();
       console.log(generatedContent.response.text());
 
-      const newChatData = [
+      const newChatData_ = [
         {role: 'model', parts: [{text: restText}]},
-        ...chatData,
+        ...newChatData,
       ];
 
       dispatch({
         type: ACTIONS.SET_CHAT_DATA,
-        payload: newChatData,
+        payload: newChatData_,
       });
     } catch (e) {
       console.error(e);
@@ -166,15 +166,12 @@ function BottomBar({setBottomBarHeight, scrollViewRef}: any) {
       scrollViewRef.current.scrollToIndex({index: 0, animated: true});
     history = [...chatData];
 
-    const newChatData = [{role: 'user', parts: [{text: message}]}, ...chatData];
-
+    let newChatData = [{role: 'user', parts: [{text: message}]}, ...chatData];
     dispatch({
       type: ACTIONS.SET_CHAT_DATA,
       payload: newChatData,
     });
 
-    setLoadingResponse(true);
-    // console.log(JSON.stringify(history.reverse()));
     try {
       const chat = model.startChat({
         history: [...history.reverse()],
@@ -184,11 +181,10 @@ function BottomBar({setBottomBarHeight, scrollViewRef}: any) {
       const response = await result.response;
       const responseText = response.text();
 
-      const newChatData = [
+      newChatData = [
         {role: 'model', parts: [{text: responseText}]},
-        ...chatData,
+        ...newChatData,
       ];
-
       dispatch({
         type: ACTIONS.SET_CHAT_DATA,
         payload: newChatData,

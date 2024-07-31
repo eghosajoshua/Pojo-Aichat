@@ -6,9 +6,10 @@ import {
   Dimensions,
   Pressable,
 } from 'react-native';
-import React, {useCallback, useRef, useState} from 'react';
+import React, {useCallback, useContext, useState} from 'react';
 //@ts-ignore
 import Icon from 'react-native-vector-icons/FontAwesome6';
+import {ACTIONS, StoreContext} from '../utils/store';
 //@ts-ignore
 
 const {width: screenWidth, height: screenHeight} = Dimensions.get('window');
@@ -20,6 +21,8 @@ const Header = ({navigation, headerHeight, setHeaderHeight}: any) => {
     let {height} = e.nativeEvent.layout;
     setHeaderHeight(height);
   }, []);
+
+  const {dispatch} = useContext(StoreContext) || {};
 
   return (
     <View
@@ -59,7 +62,13 @@ const Header = ({navigation, headerHeight, setHeaderHeight}: any) => {
               <Icon name="gear" size={20} color="white" />
               <Text className="text-white ml-3 text-lg  ">Settings</Text>
             </TouchableOpacity>
-            <TouchableOpacity className="flex flex-row items-center  bg-gray-500/10 p-3 rounded-lg justify-start">
+            <TouchableOpacity
+              onPress={() => {
+                dispatch({type: ACTIONS.SET_CURRENT_CHAT_ID, payload: null});
+                dispatch({type: ACTIONS.SET_CHAT_DATA, payload: []});
+                setIsDropdownOpen(false);
+              }}
+              className="flex flex-row items-center  bg-gray-500/10 p-3 rounded-lg justify-start">
               <Icon name="plus" size={24} color="white" />
               <Text className="text-white ml-3 text-lg  ">New Chat</Text>
             </TouchableOpacity>
