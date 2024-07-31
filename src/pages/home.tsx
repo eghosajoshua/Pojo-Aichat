@@ -12,24 +12,27 @@ import BottomBar from '../components/bottomBar';
 import Icon from 'react-native-vector-icons/FontAwesome6';
 import ChatText from '../components/chat-text';
 import ChatOptions from '../components/chat-options';
-import {useRef, useState} from 'react';
+import {useContext, useEffect, useRef, useState} from 'react';
 import {User} from '@supabase/supabase-js';
 import {Text} from 'react-native';
 import colors from '../utils/colors';
+import {StoreContext} from '../utils/store';
 
 const {width: screenWidth} = Dimensions.get('window');
 
-const Home = ({navigation, user}: {navigation: any; user: User | null}) => {
+const Home = ({navigation}: any) => {
   const [showOptions, setShowOptions] = useState(false);
   const [optionPos, setOptionPos] = useState({x: 0, y: 0});
   const [headerHeight, setHeaderHeight] = useState<number>(0);
   const [bottomBarHeight, setBottomBarHeight] = useState<number>(0);
   const [selectedText, setSelectedText] = useState('');
-  const [chatData, setChatData] = useState<
-    Array<{role: string; parts: {text: string}[]}>
-  >([]);
   const scrollViewRef = useRef(null);
 
+  const {
+    store: {chatData},
+  } = useContext(StoreContext) || {store: null};
+
+  console.log('chatData', chatData);
   return (
     <>
       <StatusBar
@@ -104,8 +107,6 @@ const Home = ({navigation, user}: {navigation: any; user: User | null}) => {
         <BottomBar
           scrollViewRef={scrollViewRef}
           setBottomBarHeight={setBottomBarHeight}
-          setChatData={setChatData}
-          chatData={chatData}
         />
       </View>
     </>

@@ -8,32 +8,46 @@ import {
   ToastAndroid,
   Platform,
 } from 'react-native';
-import React from 'react';
 //@ts-ignore
 import Icon from 'react-native-vector-icons/FontAwesome';
 //@ts-ignore
 import Icon5 from 'react-native-vector-icons/FontAwesome5';
-import {User} from '@supabase/supabase-js';
 import {supabase} from '../utils/supabase';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
+import {useContext} from 'react';
+import {StoreContext} from '../utils/store';
+import env from '../utils/env';
 
 const regex = /\([a-zA-Z]+\)/g;
 
-const Settings = ({navigation, user}: {navigation: any; user: User | null}) => {
+const Settings = ({navigation}: {navigation: any}) => {
+  GoogleSignin.configure({
+    webClientId: env.GOOGLE_WEB_CLIENT_ID,
+  });
+
+  const {
+    store: {user},
+  } = useContext(StoreContext) || {store: null};
+
   const handleSignOut = async () => {
-    await GoogleSignin.signOut();
-    const {error} = await supabase.auth.signOut();
-    if (error === null) {
-      //sign out
-      navigation.navigate('login');
-    } else {
-      if (Platform.OS == 'android') {
-        ToastAndroid.showWithGravity(
-          'something went wrong',
-          ToastAndroid.SHORT,
-          ToastAndroid.CENTER,
-        );
+    console.log('sign out');
+    try {
+      await GoogleSignin.signOut();
+      const {error} = await supabase.auth.signOut();
+      if (error === null) {
+        //sign out
+        navigation.navigate('login');
+      } else {
+        if (Platform.OS == 'android') {
+          ToastAndroid.showWithGravity(
+            'something went wrong',
+            ToastAndroid.SHORT,
+            ToastAndroid.CENTER,
+          );
+        }
       }
+    } catch (error) {
+      console.error(error);
     }
   };
 

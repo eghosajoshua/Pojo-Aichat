@@ -16,8 +16,12 @@ import {
 } from '@react-native-google-signin/google-signin';
 import {supabase} from '../utils/supabase';
 import env from '../utils/env';
+import {StoreContext, ACTIONS} from '../utils/store';
+import {useContext} from 'react';
 
-const Login = ({navigation, setUser}: any) => {
+const Login = ({navigation}: any) => {
+  const {dispatch} = useContext(StoreContext) || {dispatch: null};
+
   GoogleSignin.configure({
     webClientId: env.GOOGLE_WEB_CLIENT_ID,
   });
@@ -42,7 +46,7 @@ const Login = ({navigation, setUser}: any) => {
           }
         } else {
           //sign in
-          setUser(data.session.user);
+          dispatch({type: ACTIONS.SET_USER, payload: data.session.user});
           navigation.navigate('home');
         }
         // console.log(error, data);

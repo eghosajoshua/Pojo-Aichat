@@ -12,9 +12,11 @@ import OnBoarding2 from './src/pages/onboarding2';
 import Login from './src/pages/login';
 import {supabase} from './src/utils/supabase';
 import {AppState} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {createContext, useEffect, useState} from 'react';
 import {User} from '@supabase/supabase-js';
 import Loading from './src/pages/loading';
+import {StoreContext, reducer} from './src/utils/store';
+import {useReducer} from 'react';
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -30,58 +32,61 @@ AppState.addEventListener('change', state => {
 });
 
 const App = () => {
-  const [user, setUser] = useState<User | null>(null);
+  const [store, dispatch] = useReducer<any>(reducer, {
+    user: null,
+    currentChatId: null,
+    chatHistory: [],
+    chatData: [],
+  });
 
   return (
-    <NavigationContainer>
-      <Stack.Navigator
-        initialRouteName="loading"
-        screenOptions={{
-          headerShown: false,
-          gestureEnabled: false,
-          animation: 'slide_from_right',
-        }}>
-        <Stack.Screen name="loading">
-          {props => <Loading {...props} setUser={setUser} />}
-        </Stack.Screen>
-        <Stack.Screen name="onboard-1" component={OnBoarding1} />
-        <Stack.Screen name="onboard-2" component={OnBoarding2} />
-        <Stack.Screen name="login">
-          {props => <Login {...props} setUser={setUser} />}
-        </Stack.Screen>
-        <Stack.Screen
-          name="home"
-          options={{navigationBarColor: colors.DarkGray, headerShown: false}}>
-          {props => <HomeStack {...props} user={user} />}
-        </Stack.Screen>
-        <Stack.Screen
-          name="payment"
-          component={Payment}
-          options={{
-            animation: 'slide_from_bottom',
-            navigationBarColor: 'black',
-          }}
-        />
-        <Stack.Screen name="settings" options={{navigationBarColor: 'black'}}>
-          {props => <Settings {...props} user={user} />}
-        </Stack.Screen>
-      </Stack.Navigator>
-    </NavigationContainer>
+    <StoreContext.Provider value={{store, dispatch}}>
+      <NavigationContainer>
+        <Stack.Navigator
+          initialRouteName="loading"
+          screenOptions={{
+            headerShown: false,
+            gestureEnabled: false,
+            animation: 'slide_from_right',
+          }}>
+          <Stack.Screen name="loading" component={Loading} />
+          <Stack.Screen name="onboard-1" component={OnBoarding1} />
+          <Stack.Screen name="onboard-2" component={OnBoarding2} />
+          <Stack.Screen name="login" component={Login} />
+          <Stack.Screen
+            name="home"
+            options={{navigationBarColor: colors.DarkGray, headerShown: false}}
+            component={HomeStack}
+          />
+          <Stack.Screen
+            name="payment"
+            component={Payment}
+            options={{
+              animation: 'slide_from_bottom',
+              navigationBarColor: 'black',
+            }}
+          />
+          <Stack.Screen
+            name="settings"
+            options={{navigationBarColor: 'black'}}
+            component={Settings}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </StoreContext.Provider>
   );
 };
 
-const HomeStack = ({user}: {user: User | null}) => {
+const HomeStack = () => {
   return (
     <Drawer.Navigator
-      drawerContent={props => <SideBar {...props} user={user} />}
+      drawerContent={props => <SideBar {...props} />}
       screenOptions={{
         headerShown: false,
         drawerType: 'slide',
         swipeEnabled: false,
       }}>
-      <Drawer.Screen name="home-stack">
-        {props => <Home {...props} user={user} />}
-      </Drawer.Screen>
+      <Drawer.Screen name="home-stack" component={Home} />
     </Drawer.Navigator>
   );
 };

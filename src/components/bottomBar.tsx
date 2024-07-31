@@ -1,4 +1,10 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import {
   View,
   TouchableOpacity,
@@ -15,22 +21,63 @@ import IconIon from 'react-native-vector-icons/Ionicons';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import {GoogleGenerativeAI} from '@google/generative-ai';
 import env from '../utils/env';
+import {supabase} from '../utils/supabase';
+import {ACTIONS, StoreContext} from '../utils/store';
 
-function BottomBar({
-  setBottomBarHeight,
-  scrollViewRef,
-  setChatData,
-  chatData,
-}: any) {
+function BottomBar({setBottomBarHeight, scrollViewRef}: any) {
   const [inputValue, setInputValue] = useState('');
   const [showSendBtn, setShowSendBtn] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const [loadingResponse, setLoadingResponse] = useState(false);
 
-  // Array<{role: string; parts: {text: string}[]}>
+  const {
+    store: {chatData, currentChatId, user},
+    dispatch,
+  } = useContext(StoreContext) || {store: null};
 
   const genAi = new GoogleGenerativeAI(env.GEMINI_API_KEY);
   const model = genAi.getGenerativeModel({model: 'gemini-1.5-flash'});
+
+  //update chatDb
+  useEffect(() => {
+    const uploadChatData = async () => {
+      if (chatData.length == 0) return;
+      try {
+        if (currentChatId === null) {
+          //create new chat history
+          const {data} = await supabase
+            .from('chat_history')
+            .insert({
+              user_id: user.id,
+              chats: chatData,
+              title: chatData[chatData.length - 1].parts[0].text.substring(
+                0,
+                15,
+              ),
+            })
+            .select('id')
+            .single();
+
+          console.log(data?.id, 'upload id');
+          dispatch({
+            type: ACTIONS.SET_CURRENT_CHAT_ID,
+            payload: data?.id,
+          });
+        } else {
+          //update chat history
+          const {error} = await supabase
+            .from('chat_history')
+            .update({
+              chats: chatData,
+            })
+            .eq('id', currentChatId);
+        }
+      } catch (e) {
+        // console.error('failed to upload chat', e);
+      }
+    };
+    uploadChatData();
+  }, [chatData]);
 
   const handleImagePick = () => {
     launchImageLibrary(
@@ -38,11 +85,16 @@ function BottomBar({
       (response: any) => {
         if (response.assets && response.assets.length > 0) {
           const {uri, base64, type} = response.assets[0];
-          // setUploadedImageUri(prev => [...prev, uri]);
-          setChatData((prev: any) => [
+
+          const newChatData = [
             {role: 'user', parts: [{text: uri}]},
-            ...prev,
-          ]);
+            ...chatData,
+          ];
+
+          dispatch({
+            type: ACTIONS.SET_CHAT_DATA,
+            payload: newChatData,
+          });
 
           ImagePrompt([
             {
@@ -62,10 +114,13 @@ function BottomBar({
       if (response.assets && response.assets.length > 0) {
         const {uri, base64, type} = response.assets[0];
         // setUploadedImageUri(prev => [...prev, uri]);
-        setChatData((prev: any) => [
-          {role: 'user', parts: [{text: uri}]},
-          ...prev,
-        ]);
+
+        const newChatData = [{role: 'user', parts: [{text: uri}]}, ...chatData];
+
+        dispatch({
+          type: ACTIONS.SET_CHAT_DATA,
+          payload: newChatData,
+        });
 
         ImagePrompt([
           {
@@ -88,10 +143,15 @@ function BottomBar({
       const restText = generatedContent.response.text();
       console.log(generatedContent.response.text());
 
-      setChatData((prev: any) => [
+      const newChatData = [
         {role: 'model', parts: [{text: restText}]},
-        ...prev,
-      ]);
+        ...chatData,
+      ];
+
+      dispatch({
+        type: ACTIONS.SET_CHAT_DATA,
+        payload: newChatData,
+      });
     } catch (e) {
       console.error(e);
     }
@@ -105,10 +165,13 @@ function BottomBar({
     chatData.length > 0 &&
       scrollViewRef.current.scrollToIndex({index: 0, animated: true});
     history = [...chatData];
-    setChatData((prev: any) => [
-      {role: 'user', parts: [{text: message}]},
-      ...prev,
-    ]);
+
+    const newChatData = [{role: 'user', parts: [{text: message}]}, ...chatData];
+
+    dispatch({
+      type: ACTIONS.SET_CHAT_DATA,
+      payload: newChatData,
+    });
 
     setLoadingResponse(true);
     // console.log(JSON.stringify(history.reverse()));
@@ -121,13 +184,15 @@ function BottomBar({
       const response = await result.response;
       const responseText = response.text();
 
-      setChatData((prev: any) => [
-        {
-          role: 'model',
-          parts: [{text: responseText}],
-        },
-        ...prev,
-      ]);
+      const newChatData = [
+        {role: 'model', parts: [{text: responseText}]},
+        ...chatData,
+      ];
+
+      dispatch({
+        type: ACTIONS.SET_CHAT_DATA,
+        payload: newChatData,
+      });
     } catch (e) {
       console.error('Something went wrong', e);
     }

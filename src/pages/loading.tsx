@@ -1,14 +1,17 @@
 import {View, Text} from 'react-native';
-import React, {useEffect} from 'react';
+import React, {useContext, useEffect} from 'react';
 import {supabase} from '../utils/supabase';
+import {ACTIONS, StoreContext} from '../utils/store';
 
-const Loading = ({setUser, navigation}: {setUser: any; navigation: any}) => {
+const Loading = ({navigation}: {navigation: any}) => {
+  const {dispatch} = useContext(StoreContext) || {};
+
   useEffect(() => {
     const getSession = async () => {
       const {data} = await supabase.auth.getSession();
       if (data.session !== null) {
         //user session exist
-        setUser(data.session?.user);
+        dispatch({type: ACTIONS.SET_USER, payload: data.session?.user});
         navigation.navigate('home');
       } else {
         //user session does not exit
