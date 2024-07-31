@@ -31,7 +31,6 @@ const Home = ({navigation}: any) => {
     store: {chatData},
   } = useContext(StoreContext) || {store: null};
 
-  console.log('chatData', chatData);
   return (
     <>
       <StatusBar

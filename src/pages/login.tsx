@@ -47,6 +47,9 @@ const Login = ({navigation}: any) => {
         } else {
           //sign in
           dispatch({type: ACTIONS.SET_USER, payload: data.session.user});
+          dispatch({type: ACTIONS.SET_CHAT_HISTORY, payload: []});
+          dispatch({type: ACTIONS.SET_CURRENT_CHAT_ID, payload: null});
+          dispatch({type: ACTIONS.SET_CHAT_DATA, payload: []});
           navigation.navigate('home');
         }
         // console.log(error, data);

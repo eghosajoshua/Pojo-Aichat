@@ -9,6 +9,7 @@ const ACTIONS = {
   SET_CHAT_DATA: 'SET_CHAT_DATA',
   UPDATE_CHAT_HISTORY: 'UPDATE_CHAT_HISTORY',
   EDIT_CHAT_HISTORY_FAVOURITE: 'EDIT_CHAT_HISTORY_FAVOURITE',
+  EDIT_CHAT_HISTORY_TITLE: 'EDIT_CHAT_HISTORY_TITLE',
 };
 
 const reducer = (state: any, action: any) => {
@@ -36,7 +37,7 @@ const reducer = (state: any, action: any) => {
     case ACTIONS.UPDATE_CHAT_HISTORY:
       return {
         ...state,
-        chatHistory: [...state.chatHistory, action.payload],
+        chatHistory: [action.payload, ...state.chatHistory],
       };
     case ACTIONS.EDIT_CHAT_HISTORY_FAVOURITE:
       return {
@@ -44,6 +45,16 @@ const reducer = (state: any, action: any) => {
         chatHistory: state.chatHistory.map((chat: any) => {
           if (chat.id === action.payload.id) {
             return {...chat, favourite: action.payload.favourite};
+          }
+          return chat;
+        }),
+      };
+    case ACTIONS.EDIT_CHAT_HISTORY_TITLE:
+      return {
+        ...state,
+        chatHistory: state.chatHistory.map((chat: any) => {
+          if (chat.id === action.payload.id) {
+            return {...chat, title: action.payload.title};
           }
           return chat;
         }),
