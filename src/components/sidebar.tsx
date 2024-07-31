@@ -194,7 +194,7 @@ const SideBar = ({navigation}: {navigation: any}) => {
                         onPress={() =>
                           handleFavourite(history.id, history.favourite)
                         }>
-                        <Icon2 name="star" size={18} color="yellow" />
+                        <Icon2 name="heart" size={18} color="pink" />
                       </TouchableOpacity>
                       <TouchableOpacity
                         onPress={() => handleSelectChat(history.id)}
@@ -249,7 +249,7 @@ const SideBar = ({navigation}: {navigation: any}) => {
                     onPress={() =>
                       handleFavourite(history.id, history.favourite)
                     }>
-                    <Icon2 name="star-o" size={18} color="gray" />
+                    <Icon2 name="heart-o" size={18} color="gray" />
                   </TouchableOpacity>
                   <TouchableOpacity
                     onPress={() => handleSelectChat(history.id)}
