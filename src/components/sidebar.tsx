@@ -131,165 +131,171 @@ const SideBar = ({navigation}: {navigation: any}) => {
   };
 
   return (
-    <View
-      style={{
-        marginTop: StatusBar.currentHeight,
-        backgroundColor: colors.DarkGray,
-      }}
-      className="h-full w-full flex flex-col p-4 ">
-      <Text className="text-2xl text-white ">History</Text>
-      <View className="relative my-4">
-        <View
-          style={{top: '50%', transform: [{translateY: -10}]}}
-          className="absolute  left-4  ">
-          <Icon name="magnifying-glass" size={20} color="white" />
-        </View>
-        <TextInput
-          value={searchText}
-          onChangeText={(text: string) => setSearchText(text)}
-          className="bg-gray-500/20 p-4 rounded-2xl pl-12 text-white placeholder-slate-200 text-lg "
-          placeholder="Search"
-          placeholderTextColor="gray"
-        />
-      </View>
-      {/* hr */}
-      <View className="bg-gray-500/70 rounded-full h-1 mb-4"></View>
-      {/* Favourites */}
-      <View className="mb-4 ">
-        <TouchableOpacity
-          onPress={() => setShowFavourites(prev => !prev)}
-          className="mb-2 flex flex-row justify-between items-center">
-          <Text className="text-white text-xl">Favourites</Text>
-          {!showFavourites ? (
-            <Icon name="chevron-right" size={20} color="white" />
-          ) : (
-            <Icon name="chevron-down" size={20} color="white" />
-          )}
-        </TouchableOpacity>
-        {showFavourites && (
-          <ScrollView
-            contentContainerStyle={{gap: 20}}
-            className="mt-2  flex flex-col max-h-52 ">
-            {/* list */}
-            {chatHistory
-              .filter(
-                (history: any) =>
-                  history.title
-                    .toLowerCase()
-                    .indexOf(searchText.toLowerCase()) !== -1,
-              )
-              .sort(
-                (a: any, b: any) =>
-                  new Date(b.created_at).getTime() -
-                  new Date(a.created_at).getTime(),
-              )
-              .map((history: any) => {
-                if (history.favourite) {
-                  return (
-                    <View
-                      key={history.id}
-                      className="flex flex-row gap-5  items-center">
-                      <TouchableOpacity
-                        className="p-1"
-                        onPress={() =>
-                          handleFavourite(history.id, history.favourite)
-                        }>
-                        <Icon2 name="heart" size={18} color="pink" />
-                      </TouchableOpacity>
-                      <TouchableOpacity
-                        onPress={() => handleSelectChat(history.id)}
-                        className="flex-1">
-                        <Text
-                          numberOfLines={1}
-                          ellipsizeMode="tail"
-                          className="text-white text-lg ">
-                          {history.title}
-                        </Text>
-                      </TouchableOpacity>
-                      <TouchableOpacity
-                        onPress={() =>
-                          handleChangeTitleOpenModal(history.id, history.title)
-                        }
-                        className=" p-1 ">
-                        <Icon name="pen" size={18} color="gray" />
-                      </TouchableOpacity>
-                    </View>
-                  );
-                }
-              })}
-          </ScrollView>
-        )}
-      </View>
-      {/* hr */}
-      <View className="bg-gray-500/70 rounded-full h-1 mb-4"></View>
-      {/* history */}
-      <ScrollView
-        contentContainerStyle={{display: 'flex', gap: 20}}
-        className="flex-1 mb-4">
-        {chatHistory
-          .filter(
-            (history: any) =>
-              history.title.toLowerCase().indexOf(searchText.toLowerCase()) !==
-              -1,
-          )
-          .sort(
-            (a: any, b: any) =>
-              new Date(b.created_at).getTime() -
-              new Date(a.created_at).getTime(),
-          )
-
-          .map((history: any) => {
-            if (!history.favourite) {
-              return (
-                <View
-                  key={history.id}
-                  className="flex flex-row gap-5  items-center">
-                  <TouchableOpacity
-                    className="p-1"
-                    onPress={() =>
-                      handleFavourite(history.id, history.favourite)
-                    }>
-                    <Icon2 name="heart-o" size={18} color="gray" />
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={() => handleSelectChat(history.id)}
-                    className="flex-1">
-                    <Text
-                      numberOfLines={1}
-                      ellipsizeMode="tail"
-                      className="text-white text-lg ">
-                      {history.title}
-                    </Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={() =>
-                      handleChangeTitleOpenModal(history.id, history.title)
-                    }
-                    className=" p-1 ">
-                    <Icon name="pen" size={18} color="gray" />
-                  </TouchableOpacity>
-                </View>
-              );
-            }
-          })}
-      </ScrollView>
-      {/* hr */}
-      <View className="bg-gray-500/70 rounded-full h-1 mb-4"></View>
-      <TouchableOpacity
-        onPress={() => navigation.navigate('settings')}
-        style={{marginBottom: bottomBarHeight + 30}}
-        className="my-4 w-full  flex flex-row justify-between items-center">
-        <View className="flex flex-row mr-4 gap-4 flex-1 overflow-hidden items-center">
-          <Image
-            className="h-10 w-10 rounded-full"
-            source={{uri: user?.user_metadata.avatar_url}}
+    <>
+      <View
+        style={{
+          marginTop: StatusBar.currentHeight,
+          backgroundColor: colors.DarkGray,
+        }}
+        className="h-full w-full flex flex-col p-4 ">
+        <Text className="text-2xl text-white ">History</Text>
+        <View className="relative my-4">
+          <View
+            style={{top: '50%', transform: [{translateY: -10}]}}
+            className="absolute  left-4  ">
+            <Icon name="magnifying-glass" size={20} color="white" />
+          </View>
+          <TextInput
+            value={searchText}
+            onChangeText={(text: string) => setSearchText(text)}
+            className="bg-gray-500/20 p-4 rounded-2xl pl-12 text-white placeholder-slate-200 text-lg "
+            placeholder="Search"
+            placeholderTextColor="gray"
           />
-          <Text numberOfLines={1} className="text-white   text-xl flex-1   ">
-            {user?.user_metadata.name.replace(regex, '')}
-          </Text>
         </View>
-        <Icon name="chevron-right" size={20} color="white" />
-      </TouchableOpacity>
+        {/* hr */}
+        <View className="bg-gray-500/70 rounded-full h-1 mb-4"></View>
+        {/* Favourites */}
+        <View className="mb-4 ">
+          <TouchableOpacity
+            onPress={() => setShowFavourites(prev => !prev)}
+            className="mb-2 flex flex-row justify-between items-center">
+            <Text className="text-white text-xl">Favourites</Text>
+            {!showFavourites ? (
+              <Icon name="chevron-right" size={20} color="white" />
+            ) : (
+              <Icon name="chevron-down" size={20} color="white" />
+            )}
+          </TouchableOpacity>
+          {showFavourites && (
+            <ScrollView
+              contentContainerStyle={{gap: 20}}
+              className="mt-2  flex flex-col max-h-52 ">
+              {/* list */}
+              {chatHistory
+                .filter(
+                  (history: any) =>
+                    history.title
+                      .toLowerCase()
+                      .indexOf(searchText.toLowerCase()) !== -1,
+                )
+                .sort(
+                  (a: any, b: any) =>
+                    new Date(b.created_at).getTime() -
+                    new Date(a.created_at).getTime(),
+                )
+                .map((history: any) => {
+                  if (history.favourite) {
+                    return (
+                      <View
+                        key={history.id}
+                        className="flex flex-row gap-5  items-center">
+                        <TouchableOpacity
+                          className="p-1"
+                          onPress={() =>
+                            handleFavourite(history.id, history.favourite)
+                          }>
+                          <Icon2 name="heart" size={18} color="pink" />
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                          onPress={() => handleSelectChat(history.id)}
+                          className="flex-1">
+                          <Text
+                            numberOfLines={1}
+                            ellipsizeMode="tail"
+                            className="text-white text-lg ">
+                            {history.title}
+                          </Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                          onPress={() =>
+                            handleChangeTitleOpenModal(
+                              history.id,
+                              history.title,
+                            )
+                          }
+                          className=" p-1 ">
+                          <Icon name="pen" size={18} color="gray" />
+                        </TouchableOpacity>
+                      </View>
+                    );
+                  }
+                })}
+            </ScrollView>
+          )}
+        </View>
+        {/* hr */}
+        <View className="bg-gray-500/70 rounded-full h-1 mb-4"></View>
+        {/* history */}
+        <ScrollView
+          contentContainerStyle={{display: 'flex', gap: 20}}
+          className="flex-1 mb-4">
+          {chatHistory
+            .filter(
+              (history: any) =>
+                history.title
+                  .toLowerCase()
+                  .indexOf(searchText.toLowerCase()) !== -1,
+            )
+            .sort(
+              (a: any, b: any) =>
+                new Date(b.created_at).getTime() -
+                new Date(a.created_at).getTime(),
+            )
+
+            .map((history: any) => {
+              if (!history.favourite) {
+                return (
+                  <View
+                    key={history.id}
+                    className="flex flex-row gap-5  items-center">
+                    <TouchableOpacity
+                      className="p-1"
+                      onPress={() =>
+                        handleFavourite(history.id, history.favourite)
+                      }>
+                      <Icon2 name="heart-o" size={18} color="gray" />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={() => handleSelectChat(history.id)}
+                      className="flex-1">
+                      <Text
+                        numberOfLines={1}
+                        ellipsizeMode="tail"
+                        className="text-white text-lg ">
+                        {history.title}
+                      </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={() =>
+                        handleChangeTitleOpenModal(history.id, history.title)
+                      }
+                      className=" p-1 ">
+                      <Icon name="pen" size={18} color="gray" />
+                    </TouchableOpacity>
+                  </View>
+                );
+              }
+            })}
+        </ScrollView>
+        {/* hr */}
+        <View className="bg-gray-500/70 rounded-full h-1 mb-4"></View>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('settings')}
+          style={{marginBottom: bottomBarHeight + 30}}
+          className="my-4 w-full  flex flex-row justify-between items-center">
+          <View className="flex flex-row mr-4 gap-4 flex-1 overflow-hidden items-center">
+            <Image
+              className="h-10 w-10 rounded-full"
+              source={{uri: user?.user_metadata.avatar_url}}
+            />
+            <Text numberOfLines={1} className="text-white   text-xl flex-1   ">
+              {user?.user_metadata.name.replace(regex, '')}
+            </Text>
+          </View>
+          <Icon name="chevron-right" size={20} color="white" />
+        </TouchableOpacity>
+      </View>
       <MyModal setModalVisible={setModalVisible} modalVisible={modalVisible}>
         <Text className="text-white text-2xl font-bold text-left w-full  ">
           Edit Title
@@ -320,7 +326,7 @@ const SideBar = ({navigation}: {navigation: any}) => {
           </TouchableOpacity>
         </View>
       </MyModal>
-    </View>
+    </>
   );
 };
 

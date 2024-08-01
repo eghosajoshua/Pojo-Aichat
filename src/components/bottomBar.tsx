@@ -18,6 +18,7 @@ import env from '../utils/env';
 import {supabase} from '../utils/supabase';
 import {ACTIONS, StoreContext} from '../utils/store';
 import MyModal from './my-modal';
+import Tts from 'react-native-tts';
 
 function BottomBar({setBottomBarHeight, scrollViewRef}: any) {
   const [inputValue, setInputValue] = useState('');
@@ -35,7 +36,7 @@ function BottomBar({setBottomBarHeight, scrollViewRef}: any) {
   ];
 
   const {
-    store: {chatData, currentChatId, user},
+    store: {chatData, currentChatId, user, autoRead},
     dispatch,
   } = useContext(StoreContext) || {store: null};
 
@@ -164,7 +165,7 @@ function BottomBar({setBottomBarHeight, scrollViewRef}: any) {
         ...imageData,
       ]);
       const restText = generatedContent.response.text();
-
+      if (autoRead) Tts.speak(restText);
       newChatData_ = [
         {role: 'model', parts: [{text: restText}]},
         ...newChatData_,
@@ -203,6 +204,8 @@ function BottomBar({setBottomBarHeight, scrollViewRef}: any) {
       const response = await result.response;
       const responseText = response.text();
 
+      if (autoRead) Tts.speak(responseText);
+      console.log('autoREad', autoRead);
       newChatData = [
         {role: 'model', parts: [{text: responseText}]},
         ...newChatData,
@@ -338,8 +341,9 @@ function BottomBar({setBottomBarHeight, scrollViewRef}: any) {
         <Text className="text-white text-2xl font-bold text-left w-full  mb-6">
           Image prompt
         </Text>
-        {imagePrompts.map(prompt => (
+        {imagePrompts.map((prompt, index) => (
           <TouchableOpacity
+            key={index}
             onPress={() => handleModalSelectImagePromptText(prompt)}
             className="p-4 bg-black my-2 w-full rounded-lg">
             <Text className="text-white  text-lg">{prompt}</Text>

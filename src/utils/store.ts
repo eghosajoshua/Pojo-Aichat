@@ -10,6 +10,8 @@ const ACTIONS = {
   UPDATE_CHAT_HISTORY: 'UPDATE_CHAT_HISTORY',
   EDIT_CHAT_HISTORY_FAVOURITE: 'EDIT_CHAT_HISTORY_FAVOURITE',
   EDIT_CHAT_HISTORY_TITLE: 'EDIT_CHAT_HISTORY_TITLE',
+  SET_FONT_SIZE: 'SET_FONT_SIZE',
+  SET_AUTO_READ: 'SET_AUTO_READ',
 };
 
 const reducer = (state: any, action: any) => {
@@ -58,6 +60,16 @@ const reducer = (state: any, action: any) => {
           }
           return chat;
         }),
+      };
+    case ACTIONS.SET_FONT_SIZE:
+      return {
+        ...state,
+        chatFontSize: action.payload,
+      };
+    case ACTIONS.SET_AUTO_READ:
+      return {
+        ...state,
+        autoRead: action.payload,
       };
     default:
       return state;

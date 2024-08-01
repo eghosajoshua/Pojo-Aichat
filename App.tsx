@@ -12,11 +12,11 @@ import OnBoarding2 from './src/pages/onboarding2';
 import Login from './src/pages/login';
 import {supabase} from './src/utils/supabase';
 import {AppState} from 'react-native';
-import React, {createContext, useEffect, useState} from 'react';
-import {User} from '@supabase/supabase-js';
+import React, {useEffect, useState} from 'react';
 import Loading from './src/pages/loading';
 import {StoreContext, reducer} from './src/utils/store';
 import {useReducer} from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -37,6 +37,8 @@ const App = () => {
     currentChatId: null,
     chatHistory: [],
     chatData: [],
+    chatFontSize: 18,
+    autoRead: false,
   });
 
   return (

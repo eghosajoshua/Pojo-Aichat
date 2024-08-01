@@ -2,6 +2,8 @@ import {View, TouchableOpacity} from 'react-native';
 import colors from '../utils/colors';
 import Markdown from 'react-native-markdown-display';
 import markdownToTxt from 'markdown-to-txt';
+import {useContext} from 'react';
+import {StoreContext} from '../utils/store';
 
 const ChatText = ({
   ai = false,
@@ -16,6 +18,10 @@ const ChatText = ({
   text: string;
   setSelectedText: any;
 }) => {
+  const {
+    store: {chatFontSize},
+  } = useContext(StoreContext) ?? {};
+
   return (
     <View className=" w-full flex flex-col">
       <TouchableOpacity
@@ -44,7 +50,7 @@ const ChatText = ({
             style={{
               body: {
                 color: 'white',
-                fontSize: 18,
+                fontSize: chatFontSize,
                 lineHeight: 30,
               },
             }}>
