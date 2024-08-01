@@ -165,7 +165,6 @@ function BottomBar({setBottomBarHeight, scrollViewRef}: any) {
         ...imageData,
       ]);
       const restText = generatedContent.response.text();
-      if (autoRead) Tts.speak(restText);
       newChatData_ = [
         {role: 'model', parts: [{text: restText}]},
         ...newChatData_,
@@ -175,6 +174,7 @@ function BottomBar({setBottomBarHeight, scrollViewRef}: any) {
         type: ACTIONS.SET_CHAT_DATA,
         payload: newChatData_,
       });
+      if (autoRead) Tts.speak(restText);
     } catch (e) {
       console.error(e);
     }
@@ -204,7 +204,6 @@ function BottomBar({setBottomBarHeight, scrollViewRef}: any) {
       const response = await result.response;
       const responseText = response.text();
 
-      if (autoRead) Tts.speak(responseText);
       console.log('autoREad', autoRead);
       newChatData = [
         {role: 'model', parts: [{text: responseText}]},
@@ -214,6 +213,7 @@ function BottomBar({setBottomBarHeight, scrollViewRef}: any) {
         type: ACTIONS.SET_CHAT_DATA,
         payload: newChatData,
       });
+      if (autoRead) Tts.speak(responseText);
     } catch (e) {
       console.error('Something went wrong', e);
     }
