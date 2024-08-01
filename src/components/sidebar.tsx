@@ -30,7 +30,7 @@ const regex = /\([a-zA-Z]+\)/g;
 const SideBar = ({navigation}: {navigation: any}) => {
   const [showFavourites, setShowFavourites] = useState(false);
   const [searchText, setSearchText] = useState('');
-  const [modalVisible, setModalVisible] = useState(true);
+  const [modalVisible, setModalVisible] = useState(false);
   const [titleEditDetails, setTitleEditDetails] = useState<{
     id: number;
     title: string;

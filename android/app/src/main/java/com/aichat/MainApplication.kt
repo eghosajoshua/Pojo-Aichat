@@ -1,4 +1,4 @@
-package com.xemoai.aichat
+package com.pojoai.aichat
 
 import android.app.Application
 import com.facebook.react.PackageList

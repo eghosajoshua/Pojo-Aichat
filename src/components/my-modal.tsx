@@ -14,18 +14,22 @@ import {Colors} from 'react-native/Libraries/NewAppScreen';
 import colors from '../utils/colors';
 
 const {width: displayWidth} = Dimensions.get('screen');
-const MyModal = ({modalVisible, setModalVisible, children}: any) => {
+const MyModal = ({
+  modalVisible,
+  setModalVisible,
+  children,
+  dismissible = true,
+}: any) => {
   return (
     <Modal
       animationType="slide"
       transparent={true}
       visible={modalVisible}
       onRequestClose={() => {
-        Alert.alert('Modal has been closed.');
-        setModalVisible(!modalVisible);
+        dismissible && setModalVisible(!modalVisible);
       }}>
       <Pressable
-        onPress={() => setModalVisible(!modalVisible)}
+        onPress={() => dismissible && setModalVisible(!modalVisible)}
         className="w-full h-full absolute bg-black/90 top-0 left-0"></Pressable>
       <View style={styles.centeredView} className="">
         <View style={styles.modalView} className="">

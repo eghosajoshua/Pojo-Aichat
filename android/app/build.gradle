@@ -74,9 +74,9 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace "com.xemoai.aichat"
+    namespace "com.pojoai.aichat"
     defaultConfig {
-        applicationId "com.xemoai.aichat"
+        applicationId "com.pojoai.aichat"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

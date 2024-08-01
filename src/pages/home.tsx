@@ -63,7 +63,7 @@ const Home = ({navigation}: any) => {
             <View className="p-2">
               <FlatList
                 ref={scrollViewRef}
-                contentContainerStyle={{gap: 20}}
+                contentContainerStyle={{gap: 15}}
                 data={chatData}
                 inverted={true}
                 renderItem={({item, index}) =>
@@ -80,21 +80,19 @@ const Home = ({navigation}: any) => {
                     <View
                       key={index}
                       style={{alignSelf: 'flex-end', width: 'auto'}}
-                      className=" rounded-3xl  rounded-tl-none">
+                      className=" rounded-3xl rounded-tl-none justify-start flex items-start h-100 w-100">
                       <Image
                         style={{
                           width: screenWidth * 0.7,
                           alignSelf: 'flex-end',
                           display: 'flex',
-                          justifyContent: 'flex-end',
-                          height: screenWidth * 0.7,
-                          objectFit: 'contain',
+                          minHeight: screenWidth * 0.85,
+                          objectFit: 'cover',
                           backgroundColor: colors.DarkBlue,
                         }}
                         className="rounded-lg "
                         source={{uri: item.parts[0].text}}
                       />
-                      <Text>{item.parts[0].text}</Text>
                     </View>
                   )
                 }

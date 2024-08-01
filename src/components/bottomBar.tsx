@@ -1,10 +1,11 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useContext, useEffect, useRef, useState} from 'react';
 import {
   View,
   TouchableOpacity,
   TextInput,
   Platform,
   ToastAndroid,
+  Text,
 } from 'react-native';
 import Voice from '@react-native-voice/voice';
 //@ts-ignore
@@ -16,12 +17,22 @@ import {GoogleGenerativeAI} from '@google/generative-ai';
 import env from '../utils/env';
 import {supabase} from '../utils/supabase';
 import {ACTIONS, StoreContext} from '../utils/store';
+import MyModal from './my-modal';
 
 function BottomBar({setBottomBarHeight, scrollViewRef}: any) {
   const [inputValue, setInputValue] = useState('');
   const [showSendBtn, setShowSendBtn] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [textInputValue, setTextInputValue] = useState('');
   const [loadingResponse, setLoadingResponse] = useState(false);
+  const [imageData, setImageData] = useState([]);
+  const modalRef = useRef(null);
+  const imagePrompts = [
+    'Tell me about the image',
+    'solve the promblem in the image',
+    'identify the colors on the image',
+  ];
 
   const {
     store: {chatData, currentChatId, user},
@@ -135,17 +146,28 @@ function BottomBar({setBottomBarHeight, scrollViewRef}: any) {
   };
 
   const ImagePrompt = async (imageParts: any, newChatData: any) => {
+    setImageData(prev => imageParts);
+    setModalVisible(true);
+  };
+
+  const handleModalSelectImagePromptText = async (text: string) => {
+    setModalVisible(false);
+    let newChatData_ = [{role: 'user', parts: [{text: text}]}, ...chatData];
+    dispatch({
+      type: ACTIONS.SET_CHAT_DATA,
+      payload: newChatData_,
+    });
+
     try {
       const generatedContent = await model.generateContent([
-        'tell me about this image',
-        ...imageParts,
+        text,
+        ...imageData,
       ]);
       const restText = generatedContent.response.text();
-      console.log(generatedContent.response.text());
 
-      const newChatData_ = [
+      newChatData_ = [
         {role: 'model', parts: [{text: restText}]},
-        ...newChatData,
+        ...newChatData_,
       ];
 
       dispatch({
@@ -309,6 +331,33 @@ function BottomBar({setBottomBarHeight, scrollViewRef}: any) {
           </TouchableOpacity>
         )}
       </View>
+      <MyModal
+        dismissible={false}
+        setModalVisible={setModalVisible}
+        modalVisible={modalVisible}>
+        <Text className="text-white text-2xl font-bold text-left w-full  mb-6">
+          Image prompt
+        </Text>
+        {imagePrompts.map(prompt => (
+          <TouchableOpacity
+            onPress={() => handleModalSelectImagePromptText(prompt)}
+            className="p-4 bg-black my-2 w-full rounded-lg">
+            <Text className="text-white  text-lg">{prompt}</Text>
+          </TouchableOpacity>
+        ))}
+        <TextInput
+          ref={modalRef}
+          onChangeText={(text: string) => {
+            setTextInputValue(text);
+          }}
+          onSubmitEditing={() => {
+            handleModalSelectImagePromptText(textInputValue);
+          }}
+          className="bg-gray-500/20 p-4 rounded-2xl my-4 text-white placeholder-slate-200 text-lg w-full"
+          placeholder="enter custom prompt"
+          placeholderTextColor="gray"
+        />
+      </MyModal>
     </>
   );
 }
