@@ -13,7 +13,6 @@ import Icon from 'react-native-vector-icons/FontAwesome6';
 import ChatText from '../components/chat-text';
 import ChatOptions from '../components/chat-options';
 import {useContext, useRef, useState} from 'react';
-import {Text} from 'react-native';
 import colors from '../utils/colors';
 import {StoreContext} from '../utils/store';
 

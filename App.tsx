@@ -16,7 +16,7 @@ import React, {useEffect, useState} from 'react';
 import Loading from './src/pages/loading';
 import {StoreContext, reducer} from './src/utils/store';
 import {useReducer} from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import Purchases from 'react-native-purchases';
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -32,6 +32,11 @@ AppState.addEventListener('change', state => {
 });
 
 const App = () => {
+  useEffect(() => {
+    // Purchases.setLogLevel(LOG_LEVEL.VERBOSE);
+
+    Purchases.configure({apiKey: 'goog_afjpFmTKLRLlxrMkxRynDqcFNMe'});
+  }, []);
   const [store, dispatch] = useReducer<any>(reducer, {
     user: null,
     currentChatId: null,

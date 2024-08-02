@@ -6,9 +6,6 @@ import {
   ScrollView,
   Image,
   Dimensions,
-  StyleSheet,
-  Modal,
-  Pressable,
 } from 'react-native';
 import React, {useContext, useEffect, useState} from 'react';
 import colors from '../utils/colors';

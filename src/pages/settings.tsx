@@ -10,7 +10,6 @@ import {
 } from 'react-native';
 import Slider from '@react-native-community/slider';
 import {ACTIONS} from '../utils/store';
-
 //@ts-ignore
 import Icon from 'react-native-vector-icons/FontAwesome';
 //@ts-ignore
@@ -25,7 +24,6 @@ import env from '../utils/env';
 import MyModal from '../components/my-modal';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Switch} from 'react-native';
-import {color} from '@rneui/themed/dist/config';
 import colors from '../utils/colors';
 
 const regex = /\([a-zA-Z]+\)/g;
