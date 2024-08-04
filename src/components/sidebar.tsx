@@ -19,6 +19,7 @@ import {ACTIONS, StoreContext} from '../utils/store';
 import MyModal from './my-modal';
 import Popover from 'react-native-popover-view/dist/Popover';
 import {PopoverPlacement} from 'react-native-popover-view';
+import {scale} from 'react-native-size-matters';
 
 const {height: screenHeight} = Dimensions.get('screen');
 const {height: windowHeight} = Dimensions.get('window');
@@ -159,23 +160,30 @@ const SideBar = ({navigation}: {navigation: any}) => {
           backgroundColor: colors.DarkGray,
         }}
         className="h-full w-full flex flex-col p-4 ">
-        <Text className="text-2xl text-white ">History</Text>
-        <View className="relative my-4">
+        <Text style={{fontSize: scale(20)}} className=" text-white ">
+          History
+        </Text>
+        <View
+          style={{marginBottom: scale(15), marginTop: scale(15)}}
+          className="relative ">
           <View
             style={{top: '50%', transform: [{translateY: -10}]}}
             className="absolute  left-4  ">
-            <Icon name="magnifying-glass" size={20} color="white" />
+            <Icon name="magnifying-glass" size={scale(18)} color="white" />
           </View>
           <TextInput
             value={searchText}
             onChangeText={(text: string) => setSearchText(text)}
-            className="bg-gray-500/20 p-4 rounded-2xl pl-12 text-white placeholder-slate-200 text-lg "
+            style={{fontSize: scale(16), padding: scale(10)}}
+            className="bg-gray-500/20  rounded-2xl pl-12 text-white placeholder-slate-200 "
             placeholder="Search"
             placeholderTextColor="gray"
           />
         </View>
         {/* hr */}
-        <View className="bg-gray-500/70 rounded-full h-1 mb-4"></View>
+        <View
+          style={{marginBottom: scale(15)}}
+          className="bg-gray-500/70 rounded-full h-1 "></View>
         {/* Favourites */}
         <View className="mb-4 ">
           <TouchableOpacity

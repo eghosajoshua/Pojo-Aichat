@@ -11,6 +11,7 @@ import React, {useCallback, useContext, useState} from 'react';
 //@ts-ignore
 import Icon from 'react-native-vector-icons/FontAwesome6';
 import {ACTIONS, StoreContext} from '../utils/store';
+import {scale} from 'react-native-size-matters';
 //@ts-ignore
 
 const {width: screenWidth, height: screenHeight} = Dimensions.get('window');
@@ -28,20 +29,23 @@ const Header = ({navigation, headerHeight, setHeaderHeight}: any) => {
   return (
     <View
       onLayout={handleLayout}
-      className="flex z-10 flex-row bg-[#0D0D0D] relative justify-between items-center p-5 ">
+      style={{padding: scale(15)}}
+      className="flex z-10 flex-row bg-[#0D0D0D] relative justify-between items-center">
       <View className="flex flex-row items-center">
         <TouchableOpacity onPress={() => navigation.openDrawer()}>
           <Image
+            style={{height: scale(20), width: scale(20)}}
             source={require('../../images/burger.png')}
-            className="h-8 w-8"
           />
         </TouchableOpacity>
-        <Text className=" text-2xl text-white ml-6">ChatBot</Text>
+        <Text style={{fontSize: scale(20)}} className=" text-white ml-6">
+          ChatBot
+        </Text>
       </View>
       <TouchableOpacity
         onPress={() => setIsDropdownOpen(prev => !prev)}
         className="px-4">
-        <Icon name="ellipsis-vertical" size={24} color="white" />
+        <Icon name="ellipsis-vertical" size={scale(20)} color="white" />
       </TouchableOpacity>
       {/* dropdown */}
       {isDropdownOpen && (
@@ -53,15 +57,18 @@ const Header = ({navigation, headerHeight, setHeaderHeight}: any) => {
           <View
             style={{
               top: headerHeight + 1,
-              minWidth: 200,
-              gap: 10,
+              minWidth: scale(150),
+              gap: scale(8),
             }}
             className="bg-[#0D0D0D] flex flex-col  p-2 rounded-lg absolute  right-1 ">
             <TouchableOpacity
               onPress={() => navigation.navigate('settings')}
-              className="flex flex-row items-center  bg-gray-500/5 p-3 rounded-lg justify-start">
-              <Icon name="gear" size={20} color="white" />
-              <Text className="text-white ml-3 text-lg  ">Settings</Text>
+              style={{padding: scale(8)}}
+              className="flex flex-row items-center  bg-gray-500/5 rounded-lg justify-start">
+              <Icon name="gear" size={scale(17)} color="white" />
+              <Text style={{fontSize: scale(15)}} className="text-white ml-3  ">
+                Settings
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
@@ -69,9 +76,12 @@ const Header = ({navigation, headerHeight, setHeaderHeight}: any) => {
                 dispatch({type: ACTIONS.SET_CHAT_DATA, payload: []});
                 setIsDropdownOpen(false);
               }}
-              className="flex flex-row items-center  bg-gray-500/5 p-3 rounded-lg justify-start">
-              <Icon name="plus" size={24} color="white" />
-              <Text className="text-white ml-3 text-lg  ">New Chat</Text>
+              style={{padding: scale(8)}}
+              className="flex flex-row items-center  bg-gray-500/5 rounded-lg justify-start">
+              <Icon name="plus" size={scale(20)} color="white" />
+              <Text style={{fontSize: scale(15)}} className="text-white ml-3 ">
+                New Chat
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
@@ -81,9 +91,12 @@ const Header = ({navigation, headerHeight, setHeaderHeight}: any) => {
                   url: 'https://play.google.com/store/apps/details?id=com.pojoai.aichat',
                 });
               }}
-              className="flex flex-row items-center  bg-gray-500/5 p-3 rounded-lg justify-start">
-              <Icon name="share" size={24} color="white" />
-              <Text className="text-white ml-3 text-lg  ">Share</Text>
+              style={{padding: scale(8)}}
+              className="flex flex-row items-center  bg-gray-500/5 rounded-lg justify-start">
+              <Icon name="share" size={scale(18)} color="white" />
+              <Text style={{fontSize: scale(15)}} className="text-white ml-3 ">
+                Share
+              </Text>
             </TouchableOpacity>
           </View>
         </>

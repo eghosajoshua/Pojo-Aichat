@@ -12,6 +12,7 @@ import {
 import Icon from 'react-native-vector-icons/FontAwesome6';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import colors from '../utils/colors';
+import {scale} from 'react-native-size-matters';
 
 const {width: displayWidth} = Dimensions.get('screen');
 const MyModal = ({
@@ -55,8 +56,8 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     maxWidth: 450,
     marginHorizontal: 30,
-    borderRadius: 20,
-    padding: 30,
+    borderRadius: 10,
+    padding: scale(20),
     alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: {

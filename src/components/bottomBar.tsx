@@ -19,6 +19,7 @@ import {supabase} from '../utils/supabase';
 import {ACTIONS, StoreContext} from '../utils/store';
 import MyModal from './my-modal';
 import Tts from 'react-native-tts';
+import {scale} from 'react-native-size-matters';
 
 function BottomBar({setBottomBarHeight, scrollViewRef}: any) {
   const [inputValue, setInputValue] = useState('');
@@ -302,36 +303,45 @@ function BottomBar({setBottomBarHeight, scrollViewRef}: any) {
           const {height} = e.nativeEvent.layout;
           setBottomBarHeight(height);
         }}
-        style={{gap: 20}}
-        className="bg-[#0D0D0D] p-4 flex flex-row justify-between items-center">
+        style={{
+          gap: scale(20),
+          padding: scale(10),
+          paddingHorizontal: scale(20),
+        }}
+        className="bg-[#0D0D0D] flex flex-row justify-between items-center">
         <TouchableOpacity onPress={handleCameraPick}>
-          <Icon name="camera" size={24} color="white" />
+          <Icon name="camera" size={scale(20)} color="white" />
         </TouchableOpacity>
         <TouchableOpacity onPress={handleImagePick}>
-          <Icon name="image" size={24} color="white" />
+          <Icon name="image" size={scale(20)} color="white" />
         </TouchableOpacity>
         <TextInput
           onChangeText={handleChangeText}
           value={inputValue}
           keyboardAppearance="dark"
           multiline={true}
+          style={{
+            padding: scale(8),
+            maxHeight: scale(70),
+            fontSize: scale(12),
+          }}
           placeholder="Enter message"
           placeholderTextColor="gray"
-          className="bg-gray-500/20 p-4 rounded-lg text-white placeholder-slate-200 text-lg max-h-32 flex-1"
+          className="bg-gray-500/20 rounded-lg text-white placeholder-slate-200 flex-1"
         />
         {!showSendBtn ? (
           !isRecording ? (
             <TouchableOpacity onPress={handleVoiceStart}>
-              <Icon name="microphone" size={24} color="white" />
+              <Icon name="microphone" size={scale(20)} color="white" />
             </TouchableOpacity>
           ) : (
             <TouchableOpacity onPress={handleVoiceStop}>
-              <Icon name="stop" size={24} color="red" />
+              <Icon name="stop" size={scale(20)} color="red" />
             </TouchableOpacity>
           )
         ) : (
           <TouchableOpacity onPress={handleSubmit}>
-            <IconIon name="send" size={24} color="white" />
+            <IconIon name="send" size={scale(20)} color="white" />
           </TouchableOpacity>
         )}
       </View>
@@ -339,15 +349,20 @@ function BottomBar({setBottomBarHeight, scrollViewRef}: any) {
         dismissible={false}
         setModalVisible={setModalVisible}
         modalVisible={modalVisible}>
-        <Text className="text-white text-2xl font-bold text-left w-full  mb-6">
+        <Text
+          style={{fontSize: scale(15), marginBottom: scale(10)}}
+          className="text-white  font-bold text-left w-full">
           Image prompt
         </Text>
         {imagePrompts.map((prompt, index) => (
           <TouchableOpacity
             key={index}
             onPress={() => handleModalSelectImagePromptText(prompt)}
-            className="p-4 bg-black my-2 w-full rounded-lg">
-            <Text className="text-white  text-lg">{prompt}</Text>
+            style={{marginTop: scale(8), padding: scale(10)}}
+            className="bg-black w-full rounded-lg">
+            <Text style={{fontSize: scale(12)}} className="text-white">
+              {prompt}
+            </Text>
           </TouchableOpacity>
         ))}
         <TextInput
@@ -358,7 +373,12 @@ function BottomBar({setBottomBarHeight, scrollViewRef}: any) {
           onSubmitEditing={() => {
             handleModalSelectImagePromptText(textInputValue);
           }}
-          className="bg-gray-500/20 p-4 rounded-2xl my-4 text-white placeholder-slate-200 text-lg w-full"
+          style={{
+            padding: scale(8),
+            fontSize: scale(12),
+            marginTop: scale(10),
+          }}
+          className="bg-gray-500/20 rounded-xl text-white placeholder-slate-200  w-full"
           placeholder="enter custom prompt"
           placeholderTextColor="gray"
         />

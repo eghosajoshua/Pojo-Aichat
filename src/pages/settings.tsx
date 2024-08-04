@@ -27,7 +27,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Switch} from 'react-native';
 import colors from '../utils/colors';
 import rateApp from '../utils/rate';
-import Popover from 'react-native-popover-view';
+import {scale} from 'react-native-size-matters';
 
 const regex = /\([a-zA-Z]+\)/g;
 
@@ -97,62 +97,84 @@ const Settings = ({navigation}: {navigation: any}) => {
           backgroundColor={'black'}
         />
         {/* header */}
-        <View className=" p-2 flex flex-row items-center gap-2">
+        <View
+          style={{padding: scale(8), gap: scale(6)}}
+          className="flex flex-row items-center">
           <TouchableOpacity
             onPress={() => {
               navigation.goBack();
             }}
             className="flex flex-row  items-center p-3 py-1"
             style={{gap: 20}}>
-            <Icon name="chevron-left" size={24} color="white" />
-            <Text className="text-white text-2xl">Settings</Text>
+            <Icon name="chevron-left" size={scale(18)} color="white" />
+            <Text style={{fontSize: scale(18)}} className="text-white">
+              Settings
+            </Text>
           </TouchableOpacity>
         </View>
         <ScrollView className="flex-1 ">
           {/* user */}
           <View className="flex flex-row p-4" style={{gap: 15}}>
             <Image
+              style={{
+                width: scale(40),
+                height: scale(40),
+              }}
               source={{uri: user?.user_metadata.avatar_url}}
-              className="rounded-full h-14 w-14"
+              className="rounded-full "
             />
             <View>
-              <Text className="text-white text-xl">
+              <Text style={{fontSize: scale(15)}} className="text-white">
                 {user?.user_metadata.name.toString().replace(regex, '')}
               </Text>
-              <Text className="text-gray-300 text-lg">{user?.email}</Text>
+              <Text style={{fontSize: scale(12)}} className="text-gray-400">
+                {user?.email}
+              </Text>
             </View>
           </View>
           {/* setting list */}
           <View className="flex flex-col px-4" style={{gap: 15}}>
             <TouchableOpacity
+              style={{gap: 15}}
               onPress={() => navigation.navigate('payment')}
-              className="flex flex-row items-center p-4"
-              style={{gap: 15}}>
-              <Icon name="star" size={24} color="white" />
+              className="flex flex-row items-center p-4 ">
+              <Icon name="star" size={scale(18)} color="white" />
               <View>
-                <Text className="text-white text-lg">Subscription</Text>
-                <Text className="text-gray-300">Free</Text>
+                <Text style={{fontSize: scale(15)}} className="text-white">
+                  Subscription
+                </Text>
+                <Text style={{fontSize: scale(12)}} className="text-gray-300">
+                  Free
+                </Text>
               </View>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => setModalVisible(true)}
-              className="flex flex-row items-center p-4 "
+              className="flex flex-row items-center p-4"
               style={{gap: 15}}>
-              <Icon name="font" size={24} color="white" />
+              <Icon name="font" size={scale(18)} color="white" />
               <View>
-                <Text className="text-white text-lg">Font Size</Text>
+                <Text style={{fontSize: scale(15)}} className="text-white ">
+                  Font Size
+                </Text>
               </View>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => toggleSwitch}
               className="flex flex-row items-center p-4 justify-between">
               <View style={{gap: 15}} className="flex flex-row">
-                <Icon6 name="volume-high" size={24} color="white" />
+                <Icon6 name="volume-high" size={scale(18)} color="white" />
                 <View>
-                  <Text className="text-white text-lg">Auto Read</Text>
+                  <Text style={{fontSize: scale(15)}} className="text-white ">
+                    Auto Read
+                  </Text>
                 </View>
               </View>
               <Switch
+                style={{
+                  width: 10,
+                  height: 10,
+                }}
                 trackColor={{false: '#767577', true: '#81b0ff'}}
                 thumbColor={isEnabled ? colors.LightBlue : '#f4f3f4'}
                 ios_backgroundColor="#3e3e3e"
@@ -163,42 +185,52 @@ const Settings = ({navigation}: {navigation: any}) => {
             <TouchableOpacity
               className="flex flex-row items-center p-4 "
               style={{gap: 15}}>
-              <Icon name="history" size={24} color="white" />
+              <Icon name="history" size={scale(18)} color="white" />
               <View>
-                <Text className="text-white text-lg">Clear History</Text>
+                <Text style={{fontSize: scale(15)}} className="text-white ">
+                  Clear History
+                </Text>
               </View>
             </TouchableOpacity>
             <TouchableOpacity
               className="flex flex-row items-center p-4 "
               style={{gap: 15}}>
-              <Icon name="phone" size={24} color="white" />
+              <Icon name="phone" size={scale(18)} color="white" />
               <View>
-                <Text className="text-white text-lg">Contact Us</Text>
+                <Text style={{fontSize: scale(15)}} className="text-white ">
+                  Contact Us
+                </Text>
               </View>
             </TouchableOpacity>
             <TouchableOpacity
               className="flex flex-row items-center p-4 "
               style={{gap: 15}}>
-              <Icon5 name="book" size={20} color="white" />
+              <Icon5 name="book" size={scale(16)} color="white" />
               <View>
-                <Text className="text-white text-lg">Terms of service</Text>
+                <Text style={{fontSize: scale(15)}} className="text-white ">
+                  Terms of service
+                </Text>
               </View>
             </TouchableOpacity>
             <TouchableOpacity
               className="flex flex-row items-center p-4 "
               style={{gap: 15}}>
-              <Icon name="exclamation-circle" size={24} color="white" />
+              <Icon name="exclamation-circle" size={scale(18)} color="white" />
               <View>
-                <Text className="text-white text-lg">Privacy policy</Text>
+                <Text style={{fontSize: scale(15)}} className="text-white">
+                  Privacy policy
+                </Text>
               </View>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => rateApp()}
               className="flex flex-row items-center p-4 "
               style={{gap: 15}}>
-              <Icon name="star" size={24} color="white" />
+              <Icon name="star" size={scale(18)} color="white" />
               <View>
-                <Text className="text-white text-lg">Rate App</Text>
+                <Text style={{fontSize: scale(15)}} className="text-white">
+                  Rate App
+                </Text>
               </View>
             </TouchableOpacity>
             <TouchableOpacity
@@ -214,15 +246,18 @@ const Settings = ({navigation}: {navigation: any}) => {
               }
               className="flex flex-row items-center p-4 "
               style={{gap: 15}}>
-              <Icon name="sign-out" size={24} color="#ff7d7d" />
+              <Icon name="sign-out" size={scale(18)} color="#ff7d7d" />
               <View>
-                <Text className="text-[#ff7d7d] text-lg">Log out</Text>
+                <Text style={{fontSize: scale(15)}} className="text-[#ff7d7d]">
+                  Log out
+                </Text>
               </View>
             </TouchableOpacity>
           </View>
           <View className="py-5"></View>
         </ScrollView>
       </View>
+
       <MyModal setModalVisible={setModalVisible} modalVisible={modalVisible}>
         <Text className="text-white text-2xl font-bold text-left w-full  mb-6">
           Chat font size <Text>{chatFontSize}</Text>

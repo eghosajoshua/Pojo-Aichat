@@ -18,6 +18,7 @@ import {supabase} from '../utils/supabase';
 import env from '../utils/env';
 import {StoreContext, ACTIONS} from '../utils/store';
 import {useContext} from 'react';
+import {scale} from 'react-native-size-matters';
 
 const Login = ({navigation}: any) => {
   const {dispatch} = useContext(StoreContext) || {dispatch: null};
@@ -91,7 +92,7 @@ const Login = ({navigation}: any) => {
           <Text className="text-4xl text-black m-auto">3</Text>
         </ScrollView>
         <TouchableOpacity
-          className="p-8 mb-8"
+          style={{padding: scale(32), marginBottom: scale(32)}}
           onPress={() => {
             signIn();
           }}>
@@ -99,10 +100,12 @@ const Login = ({navigation}: any) => {
             start={{x: 0.5, y: 0.25}}
             end={{x: 0.5, y: 1.0}}
             colors={['white', 'white']}
-            style={{gap: 20}}
-            className="p-4 rounded-lg flex flex-row items-center justify-center">
-            <Icon name="google" size={24} color="black" />
-            <Text className="text-center font-semibold text-xl text-black">
+            style={{gap: scale(20), padding: scale(10)}}
+            className="rounded-lg flex flex-row items-center justify-center">
+            <Icon name="google" size={scale(20)} color="black" />
+            <Text
+              style={{fontSize: scale(14)}}
+              className="text-center font-semibold  text-black">
               Sign in with google
             </Text>
           </LinearGradient>
