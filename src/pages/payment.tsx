@@ -19,6 +19,7 @@ import Animated, {
   withRepeat as repeat,
 } from 'react-native-reanimated';
 import colors from '../utils/colors';
+import {scale} from 'react-native-size-matters';
 
 const {width} = Dimensions.get('window');
 
@@ -145,15 +146,26 @@ const Payment = ({navigation}: any) => {
         <View className="h-full w-full p-4 pt-6 pb-12 z-10 flex justify-between">
           <View className="flex w-full flex-row justify-between">
             <TouchableOpacity
+              style={{height: scale(20), width: scale(20)}}
               onPress={() => navigation.navigate('home')}
-              className="flex items-center justify-center rounded-full bg-white/20 h-7 w-7 ">
-              <Icon name="close" size={18} color="white" />
+              className="flex items-center justify-center rounded-full bg-white/20 ">
+              <Icon name="close" size={scale(14)} color="white" />
             </TouchableOpacity>
-            <TouchableOpacity className="bg-white/20 h-fit p-1 px-4 rounded-full">
-              <Text className="text-white text-sm font-light  ">Restore</Text>
+            <TouchableOpacity
+              style={{paddingHorizontal: scale(10), paddingVertical: scale(2)}}
+              className="bg-white/20 h-fit rounded-full">
+              <Text
+                style={{fontSize: scale(12)}}
+                className="text-white font-light  ">
+                Restore
+              </Text>
             </TouchableOpacity>
           </View>
-          <Text className="text-white text-4xl font-extrabold">PRO Access</Text>
+          <Text
+            style={{fontSize: scale(25)}}
+            className="text-white font-extrabold">
+            PRO Access
+          </Text>
         </View>
       </ImageBackground>
       <View className="flex-1 bg-black ">
@@ -174,7 +186,7 @@ const Payment = ({navigation}: any) => {
               <SlidingText text="wwww" />
             </Animated.View>
           </View>
-          <View className="mt-12">
+          <View style={{marginTop: scale(40)}}>
             <Animated.View
               style={{left: left3}}
               className="flex flex-row w-full gap-2 absolute ">
@@ -189,7 +201,9 @@ const Payment = ({navigation}: any) => {
             </Animated.View>
           </View>
         </View>
-        <View className="m-10 mt-5">
+        <View
+          style={{margin: scale(20), marginHorizontal: scale(35)}}
+          className=" mt-10">
           <View style={{gap: 12}} className="flex flex-row mb-4 items-end">
             {paymentPrices.map((price, index) => (
               <PriceButton
@@ -207,18 +221,25 @@ const Payment = ({navigation}: any) => {
               start={{x: 0.5, y: 0.25}}
               end={{x: 0.5, y: 1.0}}
               colors={[colors.LightBlue, colors.DarkBlue]}
-              className="p-4 rounded-lg">
-              <Text className="text-center font-semibold  text-xl text-black">
+              style={{gap: scale(20), padding: scale(10)}}
+              className=" rounded-lg">
+              <Text
+                style={{fontSize: scale(14)}}
+                className="text-center font-semibold text-black">
                 Continue with free trial
               </Text>
             </LinearGradient>
           </TouchableOpacity>
           <View className="flex flex-row justify-between py-3">
             <TouchableOpacity>
-              <Text className="text-white">Cancel Anytime</Text>
+              <Text style={{fontSize: scale(12)}} className="text-white">
+                Cancel Anytime
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity>
-              <Text className="text-white">Privacy Policy</Text>
+              <Text style={{fontSize: scale(12)}} className="text-white">
+                Privacy Policy
+              </Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -229,7 +250,13 @@ const Payment = ({navigation}: any) => {
 
 const SlidingText = ({text}: {text: string}) => {
   return (
-    <Text className="text-white/50 mx-2 flex-1 p-2 px-5 rounded-full bg-gray-500/10">
+    <Text
+      style={{
+        fontSize: scale(12),
+        paddingHorizontal: scale(10),
+        paddingVertical: scale(5),
+      }}
+      className="text-white/50 mx-2 flex-1 rounded-full bg-gray-500/10">
       {text}
     </Text>
   );
@@ -259,10 +286,8 @@ const PriceButton = ({
   return (
     <TouchableOpacity
       onPress={() => SetSelected(name)}
-      className={
-        'bg-gray-500/10 flex-1 overflow-hidden  rounded-lg relative ' +
-        (name == 'Monthly' ? 'h-36 ' : 'h-32')
-      }>
+      style={{height: name == 'Monthly' ? scale(110) : scale(90)}}
+      className={'bg-gray-500/10 flex-1 overflow-hidden  rounded-lg relative'}>
       <LinearGradient
         start={{x: 0.5, y: 0.25}}
         end={{x: 0.5, y: 1.0}}
@@ -270,16 +295,21 @@ const PriceButton = ({
         className="absolute top-0 left-0 w-full h-full"></LinearGradient>
       <View className="h-full">
         <View className="flex-1 items-center justify-center bg-black m-[0.5px] mb-0 rounded-t-lg">
-          <Text className="text-white text-3xl  text-center">${price}</Text>
+          <Text
+            style={{fontSize: scale(20)}}
+            className="text-white  text-center">
+            ${price}
+          </Text>
         </View>
         <Text
-          style={
+          style={[
             selected && {
               backgroundColor: colors.LightBlue,
               color: 'black',
-            }
-          }
-          className="text-white text-xl m-[0.5px] rounded-b-lg mt-0 bg-gray-800 text-center p-1">
+            },
+            {fontSize: scale(15), padding: scale(1)},
+          ]}
+          className="text-white text-xl m-[0.5px] rounded-b-lg mt-0 bg-gray-800 text-center ">
           {name}
         </Text>
       </View>

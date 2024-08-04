@@ -169,7 +169,7 @@ const SideBar = ({navigation}: {navigation: any}) => {
           <View
             style={{top: '50%', transform: [{translateY: -10}]}}
             className="absolute  left-4  ">
-            <Icon name="magnifying-glass" size={scale(18)} color="white" />
+            <Icon name="magnifying-glass" size={scale(14)} color="white" />
           </View>
           <TextInput
             value={searchText}
@@ -182,21 +182,23 @@ const SideBar = ({navigation}: {navigation: any}) => {
         </View>
         {/* hr */}
         <View
-          style={{marginBottom: scale(15)}}
-          className="bg-gray-500/70 rounded-full h-1 "></View>
+          style={{marginBottom: scale(15), height: scale(1)}}
+          className="bg-gray-500/70 rounded-full "></View>
         {/* Favourites */}
-        <View className="mb-4 ">
+        <View style={{marginBottom: scale(12)}}>
           <TouchableOpacity
             onPress={() => setShowFavourites(prev => !prev)}
             className="mb-2 flex flex-row justify-between items-center">
             <View className="flex flex-row items-center" style={{gap: 10}}>
-              <Icon2 name="heart" size={18} color="white" />
-              <Text className="text-white text-xl">Favourites</Text>
+              <Icon2 name="heart" size={scale(14)} color="white" />
+              <Text style={{fontSize: scale(16)}} className="text-white ">
+                Favourites
+              </Text>
             </View>
             {!showFavourites ? (
-              <Icon name="chevron-right" size={20} color="white" />
+              <Icon name="chevron-right" size={scale(14)} color="white" />
             ) : (
-              <Icon name="chevron-down" size={20} color="white" />
+              <Icon name="chevron-down" size={scale(14)} color="white" />
             )}
           </TouchableOpacity>
           {showFavourites && (
@@ -217,7 +219,9 @@ const SideBar = ({navigation}: {navigation: any}) => {
           )}
         </View>
         {/* hr */}
-        <View className="bg-gray-500/70 rounded-full h-1 mb-4"></View>
+        <View
+          style={{marginBottom: scale(15), height: scale(1)}}
+          className="bg-gray-500/70 rounded-full"></View>
         {/* history */}
         <ScrollView
           contentContainerStyle={{display: 'flex', gap: 15}}
@@ -233,17 +237,25 @@ const SideBar = ({navigation}: {navigation: any}) => {
           />
         </ScrollView>
         {/* hr */}
-        <View className="bg-gray-500/70 rounded-full h-1 mb-4"></View>
+        <View
+          style={{marginBottom: scale(15), height: scale(1)}}
+          className="bg-gray-500/70 rounded-full "></View>
         <TouchableOpacity
           onPress={() => navigation.navigate('settings')}
           style={{marginBottom: bottomBarHeight + 30}}
-          className="my-4 w-full  flex flex-row justify-between items-center">
-          <View className="flex flex-row mr-4 gap-4 flex-1 overflow-hidden items-center">
+          className=" w-full  flex flex-row justify-between items-center">
+          <View
+            style={{gap: 10}}
+            className="flex flex-row mr-4  flex-1 overflow-hidden items-center">
             <Image
-              className="h-10 w-10 rounded-full"
+              style={{height: scale(35), width: scale(35)}}
+              className="rounded-full"
               source={{uri: user?.user_metadata.avatar_url}}
             />
-            <Text numberOfLines={1} className="text-white   text-xl flex-1   ">
+            <Text
+              style={{fontSize: scale(14)}}
+              numberOfLines={1}
+              className="text-white  flex-1   ">
               {user?.user_metadata.name.replace(regex, '')}
             </Text>
           </View>
@@ -251,32 +263,47 @@ const SideBar = ({navigation}: {navigation: any}) => {
         </TouchableOpacity>
       </View>
       <MyModal setModalVisible={setModalVisible} modalVisible={modalVisible}>
-        <Text className="text-white text-2xl font-bold text-left w-full  ">
+        <Text
+          style={{fontSize: scale(18)}}
+          className="text-white font-bold text-left w-full  ">
           Edit Title
         </Text>
         <TextInput
+          style={{
+            fontSize: scale(15),
+            padding: scale(10),
+            marginVertical: scale(15),
+          }}
           value={titleEditDetails?.title}
           onChangeText={(text: string) =>
             setTitleEditDetails((prev: any) => ({...prev, title: text}))
           }
-          className="bg-gray-500/20 p-4 rounded-2xl my-4 text-white placeholder-slate-200 text-lg w-full"
+          className="bg-gray-500/20 rounded-2xl  text-white placeholder-slate-200 w-full"
           placeholder="enter title"
           placeholderTextColor="gray"
         />
         <View style={{gap: 15}} className="flex flex-row  justify-end w-full">
           <TouchableOpacity
             onPress={() => setModalVisible(false)}
-            style={{gap: 5}}
-            className="bg-red-100 rounded-xl p-1 px-3 flex flex-row justify-center items-center ">
-            <Text className="text-red-600 font-bold">Cancel</Text>
+            style={{gap: 5, padding: scale(5), paddingHorizontal: scale(10)}}
+            className="bg-red-100 rounded-xl  flex flex-row justify-center items-center ">
+            <Text
+              style={{fontSize: scale(12)}}
+              className="text-red-600 font-bold">
+              Cancel
+            </Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() =>
               handleChangeTitle(titleEditDetails?.id, titleEditDetails?.title)
             }
-            style={{gap: 5}}
+            style={{gap: 5, padding: scale(5), paddingHorizontal: scale(10)}}
             className="bg-green-100 rounded-xl p-1 px-3 flex flex-row justify-center items-center ">
-            <Text className="text-green-800 font-bold">Save</Text>
+            <Text
+              style={{fontSize: scale(12)}}
+              className="text-green-800 font-bold">
+              Save
+            </Text>
           </TouchableOpacity>
         </View>
       </MyModal>
@@ -313,9 +340,10 @@ const HistoryListItem = ({
               onPress={() => handleSelectChat(history.id)}
               className="flex-1">
               <Text
+                style={{fontSize: scale(16)}}
                 numberOfLines={1}
                 ellipsizeMode="tail"
-                className="text-white text-lg ">
+                className="text-white ">
                 {history.title}
               </Text>
             </TouchableOpacity>
@@ -323,10 +351,10 @@ const HistoryListItem = ({
             <Popover
               popoverStyle={{
                 backgroundColor: '#0D0D0D',
-                minWidth: 150,
-                padding: 10,
+                minWidth: scale(100),
+                padding: scale(8),
                 borderRadius: 10,
-                gap: 10,
+                gap: scale(8),
               }}
               placement={PopoverPlacement.AUTO}
               arrowSize={{width: 0, height: 0}}
@@ -341,7 +369,7 @@ const HistoryListItem = ({
                   className="  p-2 ">
                   <Icon
                     name="ellipsis"
-                    size={24}
+                    size={scale(14)}
                     color="white"
                     style={{
                       alignSelf: 'flex-end',
@@ -354,28 +382,30 @@ const HistoryListItem = ({
                 onPress={() =>
                   handleChangeTitleOpenModal(history.id, history.title)
                 }
-                className="  flex flex-row items-center p-3 rounded-lg bg-gray-500/5"
-                style={{gap: 15}}>
-                <Icon name="pen" size={16} color="white" />
-                <Text>Edit Title</Text>
+                className="  flex flex-row items-center  rounded-lg bg-gray-500/5"
+                style={{gap: 15, padding: scale(8)}}>
+                <Icon name="pen" size={scale(14)} color="white" />
+                <Text style={{fontSize: scale(12)}}>Edit Title</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                className="  flex flex-row items-center p-3 rounded-lg bg-gray-500/5"
-                style={{gap: 15}}
+                className="  flex flex-row items-center  rounded-lg bg-gray-500/5"
+                style={{gap: 15, padding: scale(8)}}
                 onPress={() => handleFavourite(history.id, history.favourite)}>
                 {!favourite ? (
-                  <Icon2 name="heart" size={18} color="white" />
+                  <Icon2 name="heart" size={scale(14)} color="white" />
                 ) : (
-                  <Icon2 name="heart-o" size={18} color="white" />
+                  <Icon2 name="heart-o" size={scale(14)} color="white" />
                 )}
-                <Text>{!favourite ? 'Add to' : 'Remove from'} favourite</Text>
+                <Text style={{fontSize: scale(12)}}>
+                  {!favourite ? 'Add to' : 'Remove from'} favourite
+                </Text>
               </TouchableOpacity>
               <TouchableOpacity
-                className="flex flex-row items-center p-3 rounded-lg bg-gray-500/5"
-                style={{gap: 15}}
+                className="flex flex-row items-center rounded-lg bg-gray-500/5"
+                style={{gap: 15, padding: scale(8)}}
                 onPress={() => handleDelete(history.id)}>
-                <Icon name="trash" size={18} color="red" />
-                <Text>Delete</Text>
+                <Icon name="trash" size={scale(14)} color="red" />
+                <Text style={{fontSize: scale(12)}}>Delete</Text>
               </TouchableOpacity>
             </Popover>
           </View>
