@@ -17,6 +17,7 @@ import Loading from './src/pages/loading';
 import {StoreContext, reducer} from './src/utils/store';
 import {useReducer} from 'react';
 import Purchases from 'react-native-purchases';
+import {AlertNotificationRoot} from 'react-native-alert-notification';
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -33,10 +34,9 @@ AppState.addEventListener('change', state => {
 
 const App = () => {
   useEffect(() => {
-    // Purchases.setLogLevel(LOG_LEVEL.VERBOSE);
-
     Purchases.configure({apiKey: 'goog_afjpFmTKLRLlxrMkxRynDqcFNMe'});
   }, []);
+
   const [store, dispatch] = useReducer<any>(reducer, {
     user: null,
     currentChatId: null,
@@ -48,38 +48,43 @@ const App = () => {
 
   return (
     <StoreContext.Provider value={{store, dispatch}}>
-      <NavigationContainer>
-        <Stack.Navigator
-          initialRouteName="loading"
-          screenOptions={{
-            headerShown: false,
-            gestureEnabled: false,
-            animation: 'slide_from_right',
-          }}>
-          <Stack.Screen name="loading" component={Loading} />
-          <Stack.Screen name="onboard-1" component={OnBoarding1} />
-          <Stack.Screen name="onboard-2" component={OnBoarding2} />
-          <Stack.Screen name="login" component={Login} />
-          <Stack.Screen
-            name="home"
-            options={{navigationBarColor: colors.DarkGray, headerShown: false}}
-            component={HomeStack}
-          />
-          <Stack.Screen
-            name="payment"
-            component={Payment}
-            options={{
-              animation: 'slide_from_bottom',
-              navigationBarColor: 'black',
-            }}
-          />
-          <Stack.Screen
-            name="settings"
-            options={{navigationBarColor: 'black'}}
-            component={Settings}
-          />
-        </Stack.Navigator>
-      </NavigationContainer>
+      <AlertNotificationRoot theme="dark">
+        <NavigationContainer>
+          <Stack.Navigator
+            initialRouteName="loading"
+            screenOptions={{
+              headerShown: false,
+              gestureEnabled: false,
+              animation: 'slide_from_right',
+            }}>
+            <Stack.Screen name="loading" component={Loading} />
+            <Stack.Screen name="onboard-1" component={OnBoarding1} />
+            <Stack.Screen name="onboard-2" component={OnBoarding2} />
+            <Stack.Screen name="login" component={Login} />
+            <Stack.Screen
+              name="home"
+              options={{
+                navigationBarColor: colors.DarkGray,
+                headerShown: false,
+              }}
+              component={HomeStack}
+            />
+            <Stack.Screen
+              name="payment"
+              component={Payment}
+              options={{
+                animation: 'slide_from_bottom',
+                navigationBarColor: 'black',
+              }}
+            />
+            <Stack.Screen
+              name="settings"
+              options={{navigationBarColor: 'black'}}
+              component={Settings}
+            />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </AlertNotificationRoot>
     </StoreContext.Provider>
   );
 };

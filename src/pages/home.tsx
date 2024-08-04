@@ -5,6 +5,8 @@ import {
   Dimensions,
   Image,
   FlatList,
+  Text,
+  TouchableOpacity,
 } from 'react-native';
 import Header from '../components/header';
 import BottomBar from '../components/bottomBar';
@@ -15,16 +17,17 @@ import ChatOptions from '../components/chat-options';
 import {useContext, useRef, useState} from 'react';
 import colors from '../utils/colors';
 import {StoreContext} from '../utils/store';
-
+import Popover from 'react-native-popover-view/dist/Popover';
+import {PopoverPlacement} from 'react-native-popover-view';
+import Clipboard from '@react-native-clipboard/clipboard';
+import Tts from 'react-native-tts';
 const {width: screenWidth} = Dimensions.get('window');
 
 const Home = ({navigation}: any) => {
-  const [showOptions, setShowOptions] = useState(false);
-  const [optionPos, setOptionPos] = useState({x: 0, y: 0});
   const [headerHeight, setHeaderHeight] = useState<number>(0);
   const [bottomBarHeight, setBottomBarHeight] = useState<number>(0);
-  const [selectedText, setSelectedText] = useState('');
   const scrollViewRef = useRef(null);
+  const [copied, setCopied] = useState(false);
 
   const {
     store: {chatData},
@@ -50,7 +53,7 @@ const Home = ({navigation}: any) => {
             className="flex-1"
             source={require('../../images/chat-bg.jpg')}>
             <View className="absolute top-0 left-0 w-full h-full bg-black/50"></View>
-            {showOptions && (
+            {/* {showOptions && (
               <ChatOptions
                 setShowOptions={setShowOptions}
                 optionPos={optionPos}
@@ -58,7 +61,7 @@ const Home = ({navigation}: any) => {
                 bottomBarHeight={bottomBarHeight}
                 selectedText={selectedText}
               />
-            )}
+            )} */}
             <View className="p-2">
               <FlatList
                 ref={scrollViewRef}
@@ -67,14 +70,57 @@ const Home = ({navigation}: any) => {
                 inverted={true}
                 renderItem={({item, index}) =>
                   item.parts[0].text.indexOf('file:') < 0 ? (
-                    <ChatText
-                      key={index}
-                      ai={item.role === 'model'}
-                      setShowOptions={setShowOptions}
-                      setOptionPos={setOptionPos}
-                      text={item.parts[0].text}
-                      setSelectedText={setSelectedText}
-                    />
+                    <Popover
+                      popoverStyle={{
+                        backgroundColor: '#0D0D0D',
+                        minWidth: 200,
+                        padding: 10,
+                        borderRadius: 10,
+                        gap: 10,
+                      }}
+                      placement={PopoverPlacement.AUTO}
+                      arrowSize={{width: 0, height: 0}}
+                      verticalOffset={
+                        StatusBar.currentHeight != undefined
+                          ? -StatusBar.currentHeight
+                          : -20
+                      }
+                      from={
+                        <TouchableOpacity activeOpacity={0.8}>
+                          <ChatText
+                            key={index}
+                            ai={item.role === 'model'}
+                            text={item.parts[0].text}
+                          />
+                        </TouchableOpacity>
+                      }>
+                      <TouchableOpacity
+                        onPress={() => {
+                          Clipboard.setString(item.parts[0].text);
+                          setCopied(true);
+                          setTimeout(() => {
+                            setCopied(false);
+                          }, 50);
+                        }}
+                        className="flex flex-row items-center bg-gray-500/5 p-2 px-3 rounded-lg"
+                        style={{gap: 15}}>
+                        {!copied ? (
+                          <Icon color="white" name="copy" size={20} />
+                        ) : (
+                          <Icon color="lime" name="check" size={20} />
+                        )}
+                        <Text className="text-white text-lg">Copy</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        onPress={() => {
+                          Tts.speak(item.parts[0].text);
+                        }}
+                        className="flex flex-row items-center bg-gray-500/5 p-2 px-3 rounded-lg"
+                        style={{gap: 10}}>
+                        <Icon color="white" name="volume-high" size={20} />
+                        <Text className="text-white text-lg">Read aloud</Text>
+                      </TouchableOpacity>
+                    </Popover>
                   ) : (
                     <View
                       key={index}

@@ -7,6 +7,7 @@ import {
   Image,
   ToastAndroid,
   Platform,
+  Alert,
 } from 'react-native';
 import Slider from '@react-native-community/slider';
 import {ACTIONS} from '../utils/store';
@@ -25,6 +26,8 @@ import MyModal from '../components/my-modal';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Switch} from 'react-native';
 import colors from '../utils/colors';
+import rateApp from '../utils/rate';
+import Popover from 'react-native-popover-view';
 
 const regex = /\([a-zA-Z]+\)/g;
 
@@ -190,7 +193,25 @@ const Settings = ({navigation}: {navigation: any}) => {
               </View>
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={handleSignOut}
+              onPress={() => rateApp()}
+              className="flex flex-row items-center p-4 "
+              style={{gap: 15}}>
+              <Icon name="star" size={24} color="white" />
+              <View>
+                <Text className="text-white text-lg">Rate App</Text>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() =>
+                Alert.alert('Log out', 'Are you sure you want to log out?', [
+                  {
+                    text: 'Cancel',
+                    onPress: () => {},
+                    style: 'cancel',
+                  },
+                  {text: 'Yes', onPress: () => handleSignOut()},
+                ])
+              }
               className="flex flex-row items-center p-4 "
               style={{gap: 15}}>
               <Icon name="sign-out" size={24} color="#ff7d7d" />

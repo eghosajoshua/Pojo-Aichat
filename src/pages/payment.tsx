@@ -277,7 +277,6 @@ const PriceButton = ({
             selected && {
               backgroundColor: colors.LightBlue,
               color: 'black',
-              fontWeight: 'semibold',
             }
           }
           className="text-white text-xl m-[0.5px] rounded-b-lg mt-0 bg-gray-800 text-center p-1">

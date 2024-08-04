@@ -33,6 +33,7 @@ const Loading = ({navigation}: {navigation: any}) => {
     };
     getSession();
   }, []);
+
   return (
     <View>
       <Text>Loading</Text>

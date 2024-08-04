@@ -12,6 +12,7 @@ const ACTIONS = {
   EDIT_CHAT_HISTORY_TITLE: 'EDIT_CHAT_HISTORY_TITLE',
   SET_FONT_SIZE: 'SET_FONT_SIZE',
   SET_AUTO_READ: 'SET_AUTO_READ',
+  DELETE_CHAT_HISTORY: 'DELETE_CHAT_HISTORY',
 };
 
 const reducer = (state: any, action: any) => {
@@ -70,6 +71,15 @@ const reducer = (state: any, action: any) => {
       return {
         ...state,
         autoRead: action.payload,
+      };
+    case ACTIONS.DELETE_CHAT_HISTORY:
+      return {
+        ...state,
+        chatHistory: state.chatHistory.filter((chat: any) => {
+          if (chat.id !== action.payload.id) {
+            return chat;
+          }
+        }),
       };
     default:
       return state;

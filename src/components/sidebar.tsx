@@ -17,6 +17,8 @@ import Icon2 from 'react-native-vector-icons/FontAwesome';
 import {supabase} from '../utils/supabase';
 import {ACTIONS, StoreContext} from '../utils/store';
 import MyModal from './my-modal';
+import Popover from 'react-native-popover-view/dist/Popover';
+import {PopoverPlacement} from 'react-native-popover-view';
 
 const {height: screenHeight} = Dimensions.get('screen');
 const {height: windowHeight} = Dimensions.get('window');
@@ -28,6 +30,7 @@ const SideBar = ({navigation}: {navigation: any}) => {
   const [showFavourites, setShowFavourites] = useState(false);
   const [searchText, setSearchText] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
+
   const [titleEditDetails, setTitleEditDetails] = useState<{
     id: number;
     title: string;
@@ -37,6 +40,8 @@ const SideBar = ({navigation}: {navigation: any}) => {
     dispatch,
     store: {user, chatHistory},
   } = useContext(StoreContext) || {store: null};
+
+  console.log(chatHistory);
 
   useEffect(() => {
     const getChatHistory = async () => {
@@ -122,6 +127,25 @@ const SideBar = ({navigation}: {navigation: any}) => {
     }
   };
 
+  const handleDelete = async (id: any) => {
+    console.log(id);
+
+    try {
+      const {status} = await supabase
+        .from('chat_history')
+        .delete()
+        .eq('id', id);
+      console.log(status, '-error');
+
+      dispatch({
+        type: ACTIONS.DELETE_CHAT_HISTORY,
+        payload: {id: id},
+      });
+    } catch (e) {
+      console.log('errrr', e);
+    }
+  };
+
   const handleChangeTitleOpenModal = async (id: any, title: string) => {
     setModalVisible(true);
     setTitleEditDetails({id, title});
@@ -157,7 +181,10 @@ const SideBar = ({navigation}: {navigation: any}) => {
           <TouchableOpacity
             onPress={() => setShowFavourites(prev => !prev)}
             className="mb-2 flex flex-row justify-between items-center">
-            <Text className="text-white text-xl">Favourites</Text>
+            <View className="flex flex-row items-center" style={{gap: 10}}>
+              <Icon2 name="heart" size={18} color="white" />
+              <Text className="text-white text-xl">Favourites</Text>
+            </View>
             {!showFavourites ? (
               <Icon name="chevron-right" size={20} color="white" />
             ) : (
@@ -169,55 +196,15 @@ const SideBar = ({navigation}: {navigation: any}) => {
               contentContainerStyle={{gap: 20}}
               className="mt-2  flex flex-col max-h-52 ">
               {/* list */}
-              {chatHistory
-                .filter(
-                  (history: any) =>
-                    history.title
-                      .toLowerCase()
-                      .indexOf(searchText.toLowerCase()) !== -1,
-                )
-                .sort(
-                  (a: any, b: any) =>
-                    new Date(b.created_at).getTime() -
-                    new Date(a.created_at).getTime(),
-                )
-                .map((history: any) => {
-                  if (history.favourite) {
-                    return (
-                      <View
-                        key={history.id}
-                        className="flex flex-row gap-5  items-center">
-                        <TouchableOpacity
-                          className="p-1"
-                          onPress={() =>
-                            handleFavourite(history.id, history.favourite)
-                          }>
-                          <Icon2 name="heart" size={18} color="pink" />
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                          onPress={() => handleSelectChat(history.id)}
-                          className="flex-1">
-                          <Text
-                            numberOfLines={1}
-                            ellipsizeMode="tail"
-                            className="text-white text-lg ">
-                            {history.title}
-                          </Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                          onPress={() =>
-                            handleChangeTitleOpenModal(
-                              history.id,
-                              history.title,
-                            )
-                          }
-                          className=" p-1 ">
-                          <Icon name="pen" size={18} color="gray" />
-                        </TouchableOpacity>
-                      </View>
-                    );
-                  }
-                })}
+              <HistoryListItem
+                favourite={true}
+                chatHistory={chatHistory}
+                searchText={searchText}
+                handleSelectChat={handleSelectChat}
+                handleChangeTitleOpenModal={handleChangeTitleOpenModal}
+                handleFavourite={handleFavourite}
+                handleDelete={handleDelete}
+              />
             </ScrollView>
           )}
         </View>
@@ -225,55 +212,17 @@ const SideBar = ({navigation}: {navigation: any}) => {
         <View className="bg-gray-500/70 rounded-full h-1 mb-4"></View>
         {/* history */}
         <ScrollView
-          contentContainerStyle={{display: 'flex', gap: 20}}
+          contentContainerStyle={{display: 'flex', gap: 15}}
           className="flex-1 mb-4">
-          {chatHistory
-            .filter(
-              (history: any) =>
-                history.title
-                  .toLowerCase()
-                  .indexOf(searchText.toLowerCase()) !== -1,
-            )
-            .sort(
-              (a: any, b: any) =>
-                new Date(b.created_at).getTime() -
-                new Date(a.created_at).getTime(),
-            )
-
-            .map((history: any) => {
-              if (!history.favourite) {
-                return (
-                  <View
-                    key={history.id}
-                    className="flex flex-row gap-5  items-center">
-                    <TouchableOpacity
-                      className="p-1"
-                      onPress={() =>
-                        handleFavourite(history.id, history.favourite)
-                      }>
-                      <Icon2 name="heart-o" size={18} color="gray" />
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      onPress={() => handleSelectChat(history.id)}
-                      className="flex-1">
-                      <Text
-                        numberOfLines={1}
-                        ellipsizeMode="tail"
-                        className="text-white text-lg ">
-                        {history.title}
-                      </Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      onPress={() =>
-                        handleChangeTitleOpenModal(history.id, history.title)
-                      }
-                      className=" p-1 ">
-                      <Icon name="pen" size={18} color="gray" />
-                    </TouchableOpacity>
-                  </View>
-                );
-              }
-            })}
+          <HistoryListItem
+            favourite={false}
+            chatHistory={chatHistory}
+            searchText={searchText}
+            handleSelectChat={handleSelectChat}
+            handleChangeTitleOpenModal={handleChangeTitleOpenModal}
+            handleFavourite={handleFavourite}
+            handleDelete={handleDelete}
+          />
         </ScrollView>
         {/* hr */}
         <View className="bg-gray-500/70 rounded-full h-1 mb-4"></View>
@@ -325,6 +274,106 @@ const SideBar = ({navigation}: {navigation: any}) => {
       </MyModal>
     </>
   );
+};
+
+const HistoryListItem = ({
+  chatHistory,
+  searchText,
+  handleSelectChat,
+  handleChangeTitleOpenModal,
+  handleFavourite,
+  favourite,
+  handleDelete,
+}: any) => {
+  return chatHistory
+    .filter(
+      (history: any) =>
+        history.title.toLowerCase().indexOf(searchText.toLowerCase()) !== -1,
+    )
+    .sort(
+      (a: any, b: any) =>
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+    )
+    .map((history: any) => {
+      if (history.favourite == favourite) {
+        return (
+          <View
+            key={history.id}
+            style={{gap: 10}}
+            className="flex flex-row  items-center justify-center">
+            <TouchableOpacity
+              onPress={() => handleSelectChat(history.id)}
+              className="flex-1">
+              <Text
+                numberOfLines={1}
+                ellipsizeMode="tail"
+                className="text-white text-lg ">
+                {history.title}
+              </Text>
+            </TouchableOpacity>
+
+            <Popover
+              popoverStyle={{
+                backgroundColor: '#0D0D0D',
+                minWidth: 150,
+                padding: 10,
+                borderRadius: 10,
+                gap: 10,
+              }}
+              placement={PopoverPlacement.AUTO}
+              arrowSize={{width: 0, height: 0}}
+              verticalOffset={
+                StatusBar.currentHeight != undefined
+                  ? -StatusBar.currentHeight
+                  : -20
+              }
+              from={
+                <TouchableOpacity
+                  style={{alignSelf: 'flex-end'}}
+                  className="  p-2 ">
+                  <Icon
+                    name="ellipsis"
+                    size={24}
+                    color="white"
+                    style={{
+                      alignSelf: 'flex-end',
+                      margin: 'auto',
+                    }}
+                  />
+                </TouchableOpacity>
+              }>
+              <TouchableOpacity
+                onPress={() =>
+                  handleChangeTitleOpenModal(history.id, history.title)
+                }
+                className="  flex flex-row items-center p-3 rounded-lg bg-gray-500/5"
+                style={{gap: 15}}>
+                <Icon name="pen" size={16} color="white" />
+                <Text>Edit Title</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                className="  flex flex-row items-center p-3 rounded-lg bg-gray-500/5"
+                style={{gap: 15}}
+                onPress={() => handleFavourite(history.id, history.favourite)}>
+                {!favourite ? (
+                  <Icon2 name="heart" size={18} color="white" />
+                ) : (
+                  <Icon2 name="heart-o" size={18} color="white" />
+                )}
+                <Text>{!favourite ? 'Add to' : 'Remove from'} favourite</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                className="flex flex-row items-center p-3 rounded-lg bg-gray-500/5"
+                style={{gap: 15}}
+                onPress={() => handleDelete(history.id)}>
+                <Icon name="trash" size={18} color="red" />
+                <Text>Delete</Text>
+              </TouchableOpacity>
+            </Popover>
+          </View>
+        );
+      }
+    });
 };
 
 export default SideBar;

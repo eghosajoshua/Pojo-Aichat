@@ -259,6 +259,7 @@ function BottomBar({setBottomBarHeight, scrollViewRef}: any) {
     }
   };
 
+  //speech events
   useEffect(() => {
     Voice.onSpeechEnd = event => {
       setIsRecording(false);

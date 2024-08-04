@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   Dimensions,
   Pressable,
+  Share,
 } from 'react-native';
 import React, {useCallback, useContext, useState} from 'react';
 //@ts-ignore
@@ -58,7 +59,7 @@ const Header = ({navigation, headerHeight, setHeaderHeight}: any) => {
             className="bg-[#0D0D0D] flex flex-col  p-2 rounded-lg absolute  right-1 ">
             <TouchableOpacity
               onPress={() => navigation.navigate('settings')}
-              className="flex flex-row items-center  bg-gray-500/10 p-3 rounded-lg justify-start">
+              className="flex flex-row items-center  bg-gray-500/5 p-3 rounded-lg justify-start">
               <Icon name="gear" size={20} color="white" />
               <Text className="text-white ml-3 text-lg  ">Settings</Text>
             </TouchableOpacity>
@@ -68,9 +69,21 @@ const Header = ({navigation, headerHeight, setHeaderHeight}: any) => {
                 dispatch({type: ACTIONS.SET_CHAT_DATA, payload: []});
                 setIsDropdownOpen(false);
               }}
-              className="flex flex-row items-center  bg-gray-500/10 p-3 rounded-lg justify-start">
+              className="flex flex-row items-center  bg-gray-500/5 p-3 rounded-lg justify-start">
               <Icon name="plus" size={24} color="white" />
               <Text className="text-white ml-3 text-lg  ">New Chat</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                Share.share({
+                  message:
+                    'Check out this app Pojo AI Chatbot - https://play.google.com/store/apps/details?id=com.pojoai.aichat',
+                  url: 'https://play.google.com/store/apps/details?id=com.pojoai.aichat',
+                });
+              }}
+              className="flex flex-row items-center  bg-gray-500/5 p-3 rounded-lg justify-start">
+              <Icon name="share" size={24} color="white" />
+              <Text className="text-white ml-3 text-lg  ">Share</Text>
             </TouchableOpacity>
           </View>
         </>
