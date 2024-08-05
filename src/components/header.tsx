@@ -13,6 +13,7 @@ import Icon from 'react-native-vector-icons/FontAwesome6';
 import {ACTIONS, StoreContext} from '../utils/store';
 import {scale} from 'react-native-size-matters';
 //@ts-ignore
+import Animated, {FadeIn, FadeOutUp} from 'react-native-reanimated';
 
 const {width: screenWidth, height: screenHeight} = Dimensions.get('window');
 
@@ -54,7 +55,9 @@ const Header = ({navigation, headerHeight, setHeaderHeight}: any) => {
             onPress={() => setIsDropdownOpen(false)}
             style={{width: screenWidth, height: screenHeight}}
             className=" absolute top-0 left-0"></Pressable>
-          <View
+          <Animated.View
+            entering={FadeIn}
+            exiting={FadeOutUp}
             style={{
               top: headerHeight + 1,
               minWidth: scale(150),
@@ -98,7 +101,7 @@ const Header = ({navigation, headerHeight, setHeaderHeight}: any) => {
                 Share
               </Text>
             </TouchableOpacity>
-          </View>
+          </Animated.View>
         </>
       )}
     </View>
