@@ -1,6 +1,6 @@
 import React, {createContext, useReducer} from 'react';
 import reducer from './reducer';
-import {storeType} from '../types/type';
+import {storeType, chatHistoryType} from '../types/type';
 
 const initialValues: storeType = {
   user: null,

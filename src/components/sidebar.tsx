@@ -18,9 +18,10 @@ import {supabase} from '../utils/supabase';
 import {StoreContext} from '../context/store';
 import CONTEXT_ACTIONS from '../context/actions';
 import MyModal from './my-modal';
-import Popover from 'react-native-popover-view/dist/Popover';
-import {PopoverPlacement} from 'react-native-popover-view';
+
 import {scale} from 'react-native-size-matters';
+import HistorySearchBar from './history-search-bar';
+import HistoryList from './history-list';
 
 const {height: screenHeight} = Dimensions.get('screen');
 const {height: windowHeight} = Dimensions.get('window');
@@ -41,12 +42,14 @@ const SideBar = ({navigation}: {navigation: any}) => {
   const {
     dispatch,
     store: {user, chatHistory},
-  } = useContext(StoreContext) || {store: null};
+  } = useContext(StoreContext);
 
   console.log(chatHistory);
 
   useEffect(() => {
     const getChatHistory = async () => {
+      console.log('hissss');
+
       try {
         if (user !== null) {
           const {data, error} = await supabase
@@ -54,58 +57,21 @@ const SideBar = ({navigation}: {navigation: any}) => {
             .select('title,id,favourite,created_at')
             .eq('user_id', user.id);
           if (error === null) {
-            // setChatHistory(data);
-
             dispatch({type: CONTEXT_ACTIONS.SET_CHAT_HISTORY, payload: data});
           }
         } else {
           console.log('user is null');
         }
       } catch (e) {
-        console.error('chat history error');
+        console.error('chat history error', e);
       }
     };
     getChatHistory();
-  }, [user]);
+  }, []);
 
-  const handleSelectChat = async (id: number) => {
-    try {
-      const {data, error} = await supabase
-        .from('chat_history')
-        .select('chats')
-        .eq('id', id)
-        .single();
-      if (error === null) {
-        dispatch({type: CONTEXT_ACTIONS.SET_CURRENT_CHAT_ID, payload: id});
-        dispatch({type: CONTEXT_ACTIONS.SET_CHAT_DATA, payload: data.chats});
-      } else {
-        console.error(error, 'nawa');
-      }
-    } catch (e) {
-      console.log('errrr', e);
-    }
-    setSearchText('');
-    navigation.closeDrawer();
-  };
-
-  const handleFavourite = async (id: any, favourite: Boolean) => {
-    try {
-      const {error} = await supabase
-        .from('chat_history')
-        .update({favourite: !favourite})
-        .eq('id', id)
-        .single();
-      if (error === null) {
-        dispatch({
-          type: CONTEXT_ACTIONS.EDIT_CHAT_HISTORY_FAVOURITE,
-          payload: {favourite: !favourite, id: id},
-        });
-      } else {
-        console.error(error, 'nawa');
-      }
-    } catch (e) {
-      console.log('errrr', e);
-    }
+  const handleChangeTitleOpenModal = async (id: any, title: string) => {
+    setModalVisible(true);
+    setTitleEditDetails({id, title});
   };
 
   const handleChangeTitle = async (id: any, title: string | undefined) => {
@@ -129,30 +95,6 @@ const SideBar = ({navigation}: {navigation: any}) => {
     }
   };
 
-  const handleDelete = async (id: any) => {
-    console.log(id);
-
-    try {
-      const {status} = await supabase
-        .from('chat_history')
-        .delete()
-        .eq('id', id);
-      console.log(status, '-error');
-
-      dispatch({
-        type: CONTEXT_ACTIONS.DELETE_CHAT_HISTORY,
-        payload: {id: id},
-      });
-    } catch (e) {
-      console.log('errrr', e);
-    }
-  };
-
-  const handleChangeTitleOpenModal = async (id: any, title: string) => {
-    setModalVisible(true);
-    setTitleEditDetails({id, title});
-  };
-
   return (
     <>
       <View
@@ -164,23 +106,10 @@ const SideBar = ({navigation}: {navigation: any}) => {
         <Text style={{fontSize: scale(20)}} className=" text-white ">
           History
         </Text>
-        <View
-          style={{marginBottom: scale(15), marginTop: scale(15)}}
-          className="relative ">
-          <View
-            style={{top: '50%', transform: [{translateY: -10}]}}
-            className="absolute  left-4  ">
-            <Icon name="magnifying-glass" size={scale(14)} color="white" />
-          </View>
-          <TextInput
-            value={searchText}
-            onChangeText={(text: string) => setSearchText(text)}
-            style={{fontSize: scale(16), padding: scale(10)}}
-            className="bg-gray-500/20  rounded-2xl pl-12 text-white placeholder-slate-200 "
-            placeholder="Search"
-            placeholderTextColor="gray"
-          />
-        </View>
+        <HistorySearchBar
+          searchText={searchText}
+          setSearchText={setSearchText}
+        />
         {/* hr */}
         <View
           style={{marginBottom: scale(15), height: scale(1)}}
@@ -203,20 +132,14 @@ const SideBar = ({navigation}: {navigation: any}) => {
             )}
           </TouchableOpacity>
           {showFavourites && (
-            <ScrollView
-              contentContainerStyle={{gap: 20}}
-              className="mt-2  flex flex-col max-h-52 ">
-              {/* list */}
-              <HistoryListItem
-                favourite={true}
-                chatHistory={chatHistory}
-                searchText={searchText}
-                handleSelectChat={handleSelectChat}
-                handleChangeTitleOpenModal={handleChangeTitleOpenModal}
-                handleFavourite={handleFavourite}
-                handleDelete={handleDelete}
-              />
-            </ScrollView>
+            <HistoryList
+              searchText={searchText}
+              chatHistory={chatHistory}
+              favourite={true}
+              setSearchText={setSearchText}
+              navigation={navigation}
+              handleChangeTitleOpenModal={handleChangeTitleOpenModal}
+            />
           )}
         </View>
         {/* hr */}
@@ -224,19 +147,14 @@ const SideBar = ({navigation}: {navigation: any}) => {
           style={{marginBottom: scale(15), height: scale(1)}}
           className="bg-gray-500/70 rounded-full"></View>
         {/* history */}
-        <ScrollView
-          contentContainerStyle={{display: 'flex', gap: 15}}
-          className="flex-1 mb-4">
-          <HistoryListItem
-            favourite={false}
-            chatHistory={chatHistory}
-            searchText={searchText}
-            handleSelectChat={handleSelectChat}
-            handleChangeTitleOpenModal={handleChangeTitleOpenModal}
-            handleFavourite={handleFavourite}
-            handleDelete={handleDelete}
-          />
-        </ScrollView>
+        <HistoryList
+          searchText={searchText}
+          chatHistory={chatHistory}
+          favourite={false}
+          setSearchText={setSearchText}
+          navigation={navigation}
+          handleChangeTitleOpenModal={handleChangeTitleOpenModal}
+        />
         {/* hr */}
         <View
           style={{marginBottom: scale(15), height: scale(1)}}
@@ -316,108 +234,6 @@ const SideBar = ({navigation}: {navigation: any}) => {
       </MyModal>
     </>
   );
-};
-
-const HistoryListItem = ({
-  chatHistory,
-  searchText,
-  handleSelectChat,
-  handleChangeTitleOpenModal,
-  handleFavourite,
-  favourite,
-  handleDelete,
-}: any) => {
-  return chatHistory
-    .filter(
-      (history: any) =>
-        history.title.toLowerCase().indexOf(searchText.toLowerCase()) !== -1,
-    )
-    .sort(
-      (a: any, b: any) =>
-        new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
-    )
-    .map((history: any) => {
-      if (history.favourite == favourite) {
-        return (
-          <View
-            key={history.id}
-            style={{gap: 10}}
-            className="flex flex-row  items-center justify-center">
-            <TouchableOpacity
-              onPress={() => handleSelectChat(history.id)}
-              className="flex-1">
-              <Text
-                style={{fontSize: scale(16)}}
-                numberOfLines={1}
-                ellipsizeMode="tail"
-                className="text-white ">
-                {history.title}
-              </Text>
-            </TouchableOpacity>
-
-            <Popover
-              popoverStyle={{
-                backgroundColor: '#0D0D0D',
-                minWidth: scale(100),
-                padding: scale(8),
-                borderRadius: 10,
-              }}
-              placement={PopoverPlacement.AUTO}
-              arrowSize={{width: 0, height: 0}}
-              verticalOffset={
-                StatusBar.currentHeight != undefined
-                  ? -StatusBar.currentHeight
-                  : -20
-              }
-              from={
-                <TouchableOpacity
-                  style={{alignSelf: 'flex-end'}}
-                  className="  p-2 ">
-                  <Icon
-                    name="ellipsis"
-                    size={scale(14)}
-                    color="white"
-                    style={{
-                      alignSelf: 'flex-end',
-                      margin: 'auto',
-                    }}
-                  />
-                </TouchableOpacity>
-              }>
-              <TouchableOpacity
-                onPress={() =>
-                  handleChangeTitleOpenModal(history.id, history.title)
-                }
-                className="  flex flex-row items-center  rounded-lg bg-gray-500/5"
-                style={{gap: 15, padding: scale(8)}}>
-                <Icon name="pen" size={scale(14)} color="white" />
-                <Text style={{fontSize: scale(12)}}>Edit Title</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                className="  flex flex-row items-center  rounded-lg bg-gray-500/5"
-                style={{gap: 15, padding: scale(8)}}
-                onPress={() => handleFavourite(history.id, history.favourite)}>
-                {!favourite ? (
-                  <Icon2 name="heart" size={scale(14)} color="white" />
-                ) : (
-                  <Icon2 name="heart-o" size={scale(14)} color="white" />
-                )}
-                <Text style={{fontSize: scale(12)}}>
-                  {!favourite ? 'Add to' : 'Remove from'} favourite
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                className="flex flex-row items-center rounded-lg bg-gray-500/5"
-                style={{gap: 15, padding: scale(8)}}
-                onPress={() => handleDelete(history.id)}>
-                <Icon name="trash" size={scale(14)} color="red" />
-                <Text style={{fontSize: scale(12)}}>Delete</Text>
-              </TouchableOpacity>
-            </Popover>
-          </View>
-        );
-      }
-    });
 };
 
 export default SideBar;
