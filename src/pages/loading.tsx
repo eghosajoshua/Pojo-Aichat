@@ -22,6 +22,8 @@ const Loading = ({navigation}: {navigation: any}) => {
 
     const getSession = async () => {
       const {data} = await supabase.auth.getSession();
+      console.log(data.session?.user, 'loading screen');
+
       if (data.session !== null) {
         //user session exist
         dispatch({type: ACTIONS.SET_USER, payload: data.session?.user});

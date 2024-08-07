@@ -120,16 +120,24 @@ const Settings = ({navigation}: {navigation: any}) => {
                 width: scale(40),
                 height: scale(40),
               }}
-              source={{uri: user?.user_metadata.avatar_url}}
+              source={{
+                uri:
+                  user?.user_metadata.avatar_url ??
+                  'https://lvoohwcdbziczdjtjycq.supabase.co/storage/v1/object/public/images/user.png',
+              }}
               className="rounded-full "
             />
-            <View>
+            <View className="justify-center">
               <Text style={{fontSize: scale(15)}} className="text-white">
-                {user?.user_metadata.name.toString().replace(regex, '')}
+                {user?.user_metadata.name
+                  ? user?.user_metadata.name.toString().replace(regex, '')
+                  : user.email}
               </Text>
-              <Text style={{fontSize: scale(12)}} className="text-gray-400">
-                {user?.email}
-              </Text>
+              {user?.user_metadata.name && (
+                <Text style={{fontSize: scale(12)}} className="text-gray-400">
+                  {user?.email}
+                </Text>
+              )}
             </View>
           </View>
           {/* setting list */}

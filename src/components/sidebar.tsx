@@ -250,13 +250,19 @@ const SideBar = ({navigation}: {navigation: any}) => {
             <Image
               style={{height: scale(35), width: scale(35)}}
               className="rounded-full"
-              source={{uri: user?.user_metadata.avatar_url}}
+              source={{
+                uri:
+                  user?.user_metadata.avatar_url ??
+                  'https://lvoohwcdbziczdjtjycq.supabase.co/storage/v1/object/public/images/user.png',
+              }}
             />
             <Text
               style={{fontSize: scale(14)}}
               numberOfLines={1}
               className="text-white  flex-1   ">
-              {user?.user_metadata.name.replace(regex, '')}
+              {user?.user_metadata.name
+                ? user?.user_metadata.name.replace(regex, '')
+                : user.email}
             </Text>
           </View>
           <Icon name="chevron-right" size={20} color="white" />
