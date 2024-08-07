@@ -16,12 +16,13 @@ import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import {GoogleGenerativeAI} from '@google/generative-ai';
 import env from '../utils/env';
 import {supabase} from '../utils/supabase';
-import {ACTIONS, StoreContext} from '../utils/store';
+import {StoreContext} from '../context/store';
+import CONTEXT_ACTIONS from '../context/actions';
 import MyModal from './my-modal';
 import Tts from 'react-native-tts';
 import {scale} from 'react-native-size-matters';
 
-function BottomBar({setBottomBarHeight, scrollViewRef}: any) {
+function BottomBar({scrollViewRef}: any) {
   const [inputValue, setInputValue] = useState('');
   const [showSendBtn, setShowSendBtn] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
@@ -39,7 +40,7 @@ function BottomBar({setBottomBarHeight, scrollViewRef}: any) {
   const {
     store: {chatData, currentChatId, user, autoRead},
     dispatch,
-  } = useContext(StoreContext) || {store: null};
+  } = useContext(StoreContext);
 
   const genAi = new GoogleGenerativeAI(env.GEMINI_API_KEY);
   const model = genAi.getGenerativeModel({model: 'gemini-1.5-flash'});
@@ -66,11 +67,11 @@ function BottomBar({setBottomBarHeight, scrollViewRef}: any) {
             .single();
 
           dispatch({
-            type: ACTIONS.SET_CURRENT_CHAT_ID,
+            type: CONTEXT_ACTIONS.SET_CURRENT_CHAT_ID,
             payload: data?.id,
           });
           dispatch({
-            type: ACTIONS.UPDATE_CHAT_HISTORY,
+            type: CONTEXT_ACTIONS.UPDATE_CHAT_HISTORY,
             payload: {favourite: false, id: data?.id, title: chatTitle},
           });
         } else {
@@ -99,7 +100,7 @@ function BottomBar({setBottomBarHeight, scrollViewRef}: any) {
           let newChatData = [{role: 'user', parts: [{text: uri}]}, ...chatData];
 
           dispatch({
-            type: ACTIONS.SET_CHAT_DATA,
+            type: CONTEXT_ACTIONS.SET_CHAT_DATA,
             payload: newChatData,
           });
 
@@ -128,7 +129,7 @@ function BottomBar({setBottomBarHeight, scrollViewRef}: any) {
         const newChatData = [{role: 'user', parts: [{text: uri}]}, ...chatData];
 
         dispatch({
-          type: ACTIONS.SET_CHAT_DATA,
+          type: CONTEXT_ACTIONS.SET_CHAT_DATA,
           payload: newChatData,
         });
 
@@ -156,7 +157,7 @@ function BottomBar({setBottomBarHeight, scrollViewRef}: any) {
     setModalVisible(false);
     let newChatData_ = [{role: 'user', parts: [{text: text}]}, ...chatData];
     dispatch({
-      type: ACTIONS.SET_CHAT_DATA,
+      type: CONTEXT_ACTIONS.SET_CHAT_DATA,
       payload: newChatData_,
     });
 
@@ -172,7 +173,7 @@ function BottomBar({setBottomBarHeight, scrollViewRef}: any) {
       ];
 
       dispatch({
-        type: ACTIONS.SET_CHAT_DATA,
+        type: CONTEXT_ACTIONS.SET_CHAT_DATA,
         payload: newChatData_,
       });
       if (autoRead) Tts.speak(restText);
@@ -192,7 +193,7 @@ function BottomBar({setBottomBarHeight, scrollViewRef}: any) {
 
     let newChatData = [{role: 'user', parts: [{text: message}]}, ...chatData];
     dispatch({
-      type: ACTIONS.SET_CHAT_DATA,
+      type: CONTEXT_ACTIONS.SET_CHAT_DATA,
       payload: newChatData,
     });
 
@@ -211,7 +212,7 @@ function BottomBar({setBottomBarHeight, scrollViewRef}: any) {
         ...newChatData,
       ];
       dispatch({
-        type: ACTIONS.SET_CHAT_DATA,
+        type: CONTEXT_ACTIONS.SET_CHAT_DATA,
         payload: newChatData,
       });
       if (autoRead) Tts.speak(responseText);
@@ -299,10 +300,6 @@ function BottomBar({setBottomBarHeight, scrollViewRef}: any) {
   return (
     <>
       <View
-        onLayout={e => {
-          const {height} = e.nativeEvent.layout;
-          setBottomBarHeight(height);
-        }}
         style={{
           gap: scale(20),
           padding: scale(10),

@@ -1,48 +1,32 @@
-import {createContext, useReducer} from 'react';
-
-const StoreContext = createContext<{store: any; dispatch: any} | null>(null);
-
-const ACTIONS = {
-  SET_USER: 'SET_USER',
-  SET_CURRENT_CHAT_ID: 'SET_CURRENT_CHAT_ID',
-  SET_CHAT_HISTORY: 'SET_CHAT_HISTORY',
-  SET_CHAT_DATA: 'SET_CHAT_DATA',
-  UPDATE_CHAT_HISTORY: 'UPDATE_CHAT_HISTORY',
-  EDIT_CHAT_HISTORY_FAVOURITE: 'EDIT_CHAT_HISTORY_FAVOURITE',
-  EDIT_CHAT_HISTORY_TITLE: 'EDIT_CHAT_HISTORY_TITLE',
-  SET_FONT_SIZE: 'SET_FONT_SIZE',
-  SET_AUTO_READ: 'SET_AUTO_READ',
-  DELETE_CHAT_HISTORY: 'DELETE_CHAT_HISTORY',
-};
-
+import CONTEXT_ACTIONS from './actions';
 const reducer = (state: any, action: any) => {
   switch (action.type) {
-    case ACTIONS.SET_USER:
+    case CONTEXT_ACTIONS.SET_USER:
       return {
         ...state,
         user: action.payload,
       };
-    case ACTIONS.SET_CURRENT_CHAT_ID:
+    case CONTEXT_ACTIONS.SET_CURRENT_CHAT_ID:
       return {
         ...state,
         currentChatId: action.payload,
       };
-    case ACTIONS.SET_CHAT_HISTORY:
+    case CONTEXT_ACTIONS.SET_CHAT_HISTORY:
       return {
         ...state,
         chatHistory: action.payload,
       };
-    case ACTIONS.SET_CHAT_DATA:
+    case CONTEXT_ACTIONS.SET_CHAT_DATA:
       return {
         ...state,
         chatData: action.payload,
       };
-    case ACTIONS.UPDATE_CHAT_HISTORY:
+    case CONTEXT_ACTIONS.UPDATE_CHAT_HISTORY:
       return {
         ...state,
         chatHistory: [action.payload, ...state.chatHistory],
       };
-    case ACTIONS.EDIT_CHAT_HISTORY_FAVOURITE:
+    case CONTEXT_ACTIONS.EDIT_CHAT_HISTORY_FAVOURITE:
       return {
         ...state,
         chatHistory: state.chatHistory.map((chat: any) => {
@@ -52,7 +36,7 @@ const reducer = (state: any, action: any) => {
           return chat;
         }),
       };
-    case ACTIONS.EDIT_CHAT_HISTORY_TITLE:
+    case CONTEXT_ACTIONS.EDIT_CHAT_HISTORY_TITLE:
       return {
         ...state,
         chatHistory: state.chatHistory.map((chat: any) => {
@@ -62,17 +46,17 @@ const reducer = (state: any, action: any) => {
           return chat;
         }),
       };
-    case ACTIONS.SET_FONT_SIZE:
+    case CONTEXT_ACTIONS.SET_FONT_SIZE:
       return {
         ...state,
         chatFontSize: action.payload,
       };
-    case ACTIONS.SET_AUTO_READ:
+    case CONTEXT_ACTIONS.SET_AUTO_READ:
       return {
         ...state,
         autoRead: action.payload,
       };
-    case ACTIONS.DELETE_CHAT_HISTORY:
+    case CONTEXT_ACTIONS.DELETE_CHAT_HISTORY:
       return {
         ...state,
         chatHistory: state.chatHistory.filter((chat: any) => {
@@ -86,4 +70,4 @@ const reducer = (state: any, action: any) => {
   }
 };
 
-export {StoreContext, reducer, ACTIONS};
+export default reducer;

@@ -1,9 +1,8 @@
-import {View, TouchableOpacity} from 'react-native';
+import {View} from 'react-native';
 import colors from '../utils/colors';
 import Markdown from 'react-native-markdown-display';
-import markdownToTxt from 'markdown-to-txt';
 import {useContext} from 'react';
-import {StoreContext} from '../utils/store';
+import {StoreContext} from '../context/store';
 import {scale} from 'react-native-size-matters';
 
 const ChatText = ({ai = false, text}: {ai?: boolean; text: string}) => {

@@ -15,7 +15,8 @@ import Icon from 'react-native-vector-icons/FontAwesome6';
 //@ts-ignore
 import Icon2 from 'react-native-vector-icons/FontAwesome';
 import {supabase} from '../utils/supabase';
-import {ACTIONS, StoreContext} from '../utils/store';
+import {StoreContext} from '../context/store';
+import CONTEXT_ACTIONS from '../context/actions';
 import MyModal from './my-modal';
 import Popover from 'react-native-popover-view/dist/Popover';
 import {PopoverPlacement} from 'react-native-popover-view';
@@ -55,7 +56,7 @@ const SideBar = ({navigation}: {navigation: any}) => {
           if (error === null) {
             // setChatHistory(data);
 
-            dispatch({type: ACTIONS.SET_CHAT_HISTORY, payload: data});
+            dispatch({type: CONTEXT_ACTIONS.SET_CHAT_HISTORY, payload: data});
           }
         } else {
           console.log('user is null');
@@ -75,8 +76,8 @@ const SideBar = ({navigation}: {navigation: any}) => {
         .eq('id', id)
         .single();
       if (error === null) {
-        dispatch({type: ACTIONS.SET_CURRENT_CHAT_ID, payload: id});
-        dispatch({type: ACTIONS.SET_CHAT_DATA, payload: data.chats});
+        dispatch({type: CONTEXT_ACTIONS.SET_CURRENT_CHAT_ID, payload: id});
+        dispatch({type: CONTEXT_ACTIONS.SET_CHAT_DATA, payload: data.chats});
       } else {
         console.error(error, 'nawa');
       }
@@ -96,7 +97,7 @@ const SideBar = ({navigation}: {navigation: any}) => {
         .single();
       if (error === null) {
         dispatch({
-          type: ACTIONS.EDIT_CHAT_HISTORY_FAVOURITE,
+          type: CONTEXT_ACTIONS.EDIT_CHAT_HISTORY_FAVOURITE,
           payload: {favourite: !favourite, id: id},
         });
       } else {
@@ -116,7 +117,7 @@ const SideBar = ({navigation}: {navigation: any}) => {
         .single();
       if (error === null) {
         dispatch({
-          type: ACTIONS.EDIT_CHAT_HISTORY_TITLE,
+          type: CONTEXT_ACTIONS.EDIT_CHAT_HISTORY_TITLE,
           payload: {title: title, id: id},
         });
         setModalVisible(false);
@@ -139,7 +140,7 @@ const SideBar = ({navigation}: {navigation: any}) => {
       console.log(status, '-error');
 
       dispatch({
-        type: ACTIONS.DELETE_CHAT_HISTORY,
+        type: CONTEXT_ACTIONS.DELETE_CHAT_HISTORY,
         payload: {id: id},
       });
     } catch (e) {
@@ -360,7 +361,6 @@ const HistoryListItem = ({
                 minWidth: scale(100),
                 padding: scale(8),
                 borderRadius: 10,
-                gap: scale(8),
               }}
               placement={PopoverPlacement.AUTO}
               arrowSize={{width: 0, height: 0}}

@@ -10,7 +10,7 @@ import {
   Alert,
 } from 'react-native';
 import Slider from '@react-native-community/slider';
-import {ACTIONS} from '../utils/store';
+import CONTEXT_ACTIONS from '../context/actions';
 //@ts-ignore
 import Icon from 'react-native-vector-icons/FontAwesome';
 //@ts-ignore
@@ -20,7 +20,7 @@ import Icon6 from 'react-native-vector-icons/FontAwesome6';
 import {supabase} from '../utils/supabase';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import {useContext, useEffect, useState} from 'react';
-import {StoreContext} from '../utils/store';
+import {StoreContext} from '../context/store';
 import env from '../utils/env';
 import MyModal from '../components/my-modal';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -35,8 +35,7 @@ const Settings = ({navigation}: {navigation: any}) => {
   const {
     dispatch,
     store: {chatFontSize, autoRead},
-  } = useContext(StoreContext) || {store: null};
-
+  } = useContext(StoreContext);
   GoogleSignin.configure({
     webClientId: env.GOOGLE_WEB_CLIENT_ID,
   });
@@ -48,7 +47,7 @@ const Settings = ({navigation}: {navigation: any}) => {
 
   useEffect(() => {
     dispatch({
-      type: ACTIONS.SET_AUTO_READ,
+      type: CONTEXT_ACTIONS.SET_AUTO_READ,
       payload: isEnabled ? 'true' : 'false',
     });
     AsyncStorage.setItem('autoRead', isEnabled ? 'true' : 'false');
@@ -83,7 +82,7 @@ const Settings = ({navigation}: {navigation: any}) => {
   const handleChangeFontSize = async (val: any) => {
     console.log(val);
     await AsyncStorage.setItem('fontSize', val.toString());
-    dispatch({type: ACTIONS.SET_FONT_SIZE, payload: val});
+    dispatch({type: CONTEXT_ACTIONS.SET_FONT_SIZE, payload: val});
   };
 
   return (

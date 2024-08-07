@@ -10,44 +10,17 @@ import Settings from './src/pages/settings';
 import OnBoarding1 from './src/pages/onboarding1';
 import OnBoarding2 from './src/pages/onboarding2';
 import Login from './src/pages/login';
-import {supabase} from './src/utils/supabase';
-import {AppState} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import Loading from './src/pages/loading';
-import {StoreContext, reducer} from './src/utils/store';
-import {useReducer} from 'react';
-import Purchases from 'react-native-purchases';
+import Store from './src/context/store';
 import {AlertNotificationRoot} from 'react-native-alert-notification';
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
 
-AppState.addEventListener('change', state => {
-  if (state === 'active') {
-    supabase.auth.startAutoRefresh();
-    console.log('active');
-  } else {
-    supabase.auth.stopAutoRefresh();
-    console.log('not active');
-  }
-});
-
 const App = () => {
-  useEffect(() => {
-    Purchases.configure({apiKey: 'goog_afjpFmTKLRLlxrMkxRynDqcFNMe'});
-  }, []);
-
-  const [store, dispatch] = useReducer<any>(reducer, {
-    user: null,
-    currentChatId: null,
-    chatHistory: [],
-    chatData: [],
-    chatFontSize: 18,
-    autoRead: false,
-  });
-
   return (
-    <StoreContext.Provider value={{store, dispatch}}>
+    <Store>
       <AlertNotificationRoot theme="dark">
         <NavigationContainer>
           <Stack.Navigator
@@ -66,9 +39,19 @@ const App = () => {
               options={{
                 navigationBarColor: colors.DarkGray,
                 headerShown: false,
-              }}
-              component={HomeStack}
-            />
+              }}>
+              {() => (
+                <Drawer.Navigator
+                  drawerContent={props => <SideBar {...props} />}
+                  screenOptions={{
+                    headerShown: false,
+                    drawerType: 'slide',
+                    swipeEnabled: false,
+                  }}>
+                  <Drawer.Screen name="home-stack" component={Home} />
+                </Drawer.Navigator>
+              )}
+            </Stack.Screen>
             <Stack.Screen
               name="payment"
               component={Payment}
@@ -85,21 +68,7 @@ const App = () => {
           </Stack.Navigator>
         </NavigationContainer>
       </AlertNotificationRoot>
-    </StoreContext.Provider>
-  );
-};
-
-const HomeStack = () => {
-  return (
-    <Drawer.Navigator
-      drawerContent={props => <SideBar {...props} />}
-      screenOptions={{
-        headerShown: false,
-        drawerType: 'slide',
-        swipeEnabled: false,
-      }}>
-      <Drawer.Screen name="home-stack" component={Home} />
-    </Drawer.Navigator>
+    </Store>
   );
 };
 
