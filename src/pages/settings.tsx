@@ -8,18 +8,17 @@ import {
   ToastAndroid,
   Platform,
   Alert,
+  StyleSheet,
 } from 'react-native';
 import Slider from '@react-native-community/slider';
 import CONTEXT_ACTIONS from '../context/actions';
 //@ts-ignore
 import Icon from 'react-native-vector-icons/FontAwesome';
 //@ts-ignore
-import Icon5 from 'react-native-vector-icons/FontAwesome5';
-//@ts-ignore
 import Icon6 from 'react-native-vector-icons/FontAwesome6';
 import {supabase} from '../utils/supabase';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
-import {useContext, useEffect, useState} from 'react';
+import {useContext, useDeferredValue, useEffect, useState} from 'react';
 import {StoreContext} from '../context/store';
 import env from '../utils/env';
 import MyModal from '../components/my-modal';
@@ -36,16 +35,19 @@ const Settings = ({navigation}: {navigation: any}) => {
     dispatch,
     store: {chatFontSize, autoRead},
   } = useContext(StoreContext);
+
+  const [fontSizeSlider, setFontSizeSlider] = useState(chatFontSize);
+  const defferedFontSizeSlider = useDeferredValue(fontSizeSlider);
+
   GoogleSignin.configure({
     webClientId: env.GOOGLE_WEB_CLIENT_ID,
   });
-
   const [modalVisible, setModalVisible] = useState(false);
   const [isEnabled, setIsEnabled] = useState(autoRead);
-  const toggleSwitch = () =>
-    setIsEnabled((previousState: any) => !previousState);
 
   useEffect(() => {
+    console.log('useeffect', isEnabled);
+
     dispatch({
       type: CONTEXT_ACTIONS.SET_AUTO_READ,
       payload: isEnabled ? 'true' : 'false',
@@ -55,10 +57,9 @@ const Settings = ({navigation}: {navigation: any}) => {
 
   const {
     store: {user},
-  } = useContext(StoreContext) || {store: null};
+  } = useContext(StoreContext);
 
   const handleSignOut = async () => {
-    console.log('sign out');
     try {
       await GoogleSignin.signOut();
       const {error} = await supabase.auth.signOut();
@@ -79,11 +80,65 @@ const Settings = ({navigation}: {navigation: any}) => {
     }
   };
 
-  const handleChangeFontSize = async (val: any) => {
-    console.log(val);
-    await AsyncStorage.setItem('fontSize', val.toString());
-    dispatch({type: CONTEXT_ACTIONS.SET_FONT_SIZE, payload: val});
-  };
+  useEffect(() => {
+    dispatch({
+      type: CONTEXT_ACTIONS.SET_FONT_SIZE,
+      payload: defferedFontSizeSlider,
+    });
+    AsyncStorage.setItem('fontSize', defferedFontSizeSlider.toString());
+  }, [defferedFontSizeSlider]);
+
+  const settingItems = [
+    {
+      title: 'Subscription',
+      subTitle: 'Free',
+      onPress: () => navigation.navigate('payment'),
+      icon: 'star',
+    },
+    {
+      title: 'Font Size',
+      onPress: () => setModalVisible(true),
+      icon: 'font',
+    },
+    {
+      title: 'Clear History',
+      onPress: () => {},
+      icon: 'history',
+    },
+    {
+      title: 'Contact Us',
+      onPress: () => {},
+      icon: 'book',
+    },
+    {
+      title: 'Terms of service',
+      onPress: () => {},
+      icon: 'exclamation-circle',
+    },
+    {
+      title: 'Privacy policy',
+      onPress: () => {},
+      icon: 'phone',
+    },
+    {
+      title: 'Rate App',
+      onPress: () => rateApp(),
+      icon: 'star',
+    },
+    {
+      title: 'Log out',
+      onPress: () =>
+        Alert.alert('Log out', 'Are you sure you want to log out?', [
+          {
+            text: 'Cancel',
+            onPress: () => {},
+            style: 'cancel',
+          },
+          {text: 'Yes', onPress: () => handleSignOut()},
+        ]),
+      icon: 'sign-out',
+    },
+  ];
 
   return (
     <>
@@ -141,34 +196,38 @@ const Settings = ({navigation}: {navigation: any}) => {
           </View>
           {/* setting list */}
           <View className="flex flex-col px-4" style={{gap: 15}}>
-            <TouchableOpacity
-              style={{gap: 15}}
-              onPress={() => navigation.navigate('payment')}
-              className="flex flex-row items-center p-4 ">
-              <Icon name="star" size={scale(18)} color="white" />
-              <View>
-                <Text style={{fontSize: scale(15)}} className="text-white">
-                  Subscription
-                </Text>
-                <Text style={{fontSize: scale(12)}} className="text-gray-300">
-                  Free
-                </Text>
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => setModalVisible(true)}
-              className="flex flex-row items-center p-4"
-              style={{gap: 15}}>
-              <Icon name="font" size={scale(18)} color="white" />
-              <View>
-                <Text style={{fontSize: scale(15)}} className="text-white ">
-                  Font Size
-                </Text>
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => toggleSwitch}
-              className="flex flex-row items-center p-4 justify-between">
+            {settingItems.map((item, index) => (
+              <TouchableOpacity
+                key={index}
+                style={{gap: 15}}
+                onPress={item.onPress}
+                className="flex flex-row items-center p-4 ">
+                <Icon
+                  name={item.icon}
+                  size={scale(18)}
+                  color={item.title == 'Log out' ? 'pink' : 'white'}
+                />
+                <View>
+                  <Text
+                    style={{
+                      fontSize: scale(15),
+                      color: item.title == 'Log out' ? 'pink' : 'white',
+                    }}
+                    className="text-white">
+                    {item.title}
+                  </Text>
+                  {item.subTitle && (
+                    <Text
+                      style={{fontSize: scale(12)}}
+                      className="text-gray-300">
+                      {item.subTitle}
+                    </Text>
+                  )}
+                </View>
+              </TouchableOpacity>
+            ))}
+
+            <View className="flex flex-row items-center p-4 justify-between">
               <View style={{gap: 15}} className="flex flex-row">
                 <Icon6 name="volume-high" size={scale(18)} color="white" />
                 <View>
@@ -179,87 +238,19 @@ const Settings = ({navigation}: {navigation: any}) => {
               </View>
               <Switch
                 style={{
-                  width: 10,
-                  height: 10,
+                  backgroundColor: 'Red',
                 }}
                 trackColor={{false: '#767577', true: '#81b0ff'}}
                 thumbColor={isEnabled ? colors.LightBlue : '#f4f3f4'}
                 ios_backgroundColor="#3e3e3e"
-                onValueChange={toggleSwitch}
+                onValueChange={val => {
+                  console.log(val);
+
+                  setIsEnabled(prev => !prev);
+                }}
                 value={isEnabled}
               />
-            </TouchableOpacity>
-            <TouchableOpacity
-              className="flex flex-row items-center p-4 "
-              style={{gap: 15}}>
-              <Icon name="history" size={scale(18)} color="white" />
-              <View>
-                <Text style={{fontSize: scale(15)}} className="text-white ">
-                  Clear History
-                </Text>
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity
-              className="flex flex-row items-center p-4 "
-              style={{gap: 15}}>
-              <Icon name="phone" size={scale(18)} color="white" />
-              <View>
-                <Text style={{fontSize: scale(15)}} className="text-white ">
-                  Contact Us
-                </Text>
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity
-              className="flex flex-row items-center p-4 "
-              style={{gap: 15}}>
-              <Icon5 name="book" size={scale(16)} color="white" />
-              <View>
-                <Text style={{fontSize: scale(15)}} className="text-white ">
-                  Terms of service
-                </Text>
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity
-              className="flex flex-row items-center p-4 "
-              style={{gap: 15}}>
-              <Icon name="exclamation-circle" size={scale(18)} color="white" />
-              <View>
-                <Text style={{fontSize: scale(15)}} className="text-white">
-                  Privacy policy
-                </Text>
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => rateApp()}
-              className="flex flex-row items-center p-4 "
-              style={{gap: 15}}>
-              <Icon name="star" size={scale(18)} color="white" />
-              <View>
-                <Text style={{fontSize: scale(15)}} className="text-white">
-                  Rate App
-                </Text>
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() =>
-                Alert.alert('Log out', 'Are you sure you want to log out?', [
-                  {
-                    text: 'Cancel',
-                    onPress: () => {},
-                    style: 'cancel',
-                  },
-                  {text: 'Yes', onPress: () => handleSignOut()},
-                ])
-              }
-              className="flex flex-row items-center p-4 "
-              style={{gap: 15}}>
-              <Icon name="sign-out" size={scale(18)} color="#ff7d7d" />
-              <View>
-                <Text style={{fontSize: scale(15)}} className="text-[#ff7d7d]">
-                  Log out
-                </Text>
-              </View>
-            </TouchableOpacity>
+            </View>
           </View>
           <View className="py-5"></View>
         </ScrollView>
@@ -267,9 +258,9 @@ const Settings = ({navigation}: {navigation: any}) => {
 
       <MyModal setModalVisible={setModalVisible} modalVisible={modalVisible}>
         <Text className="text-white text-2xl font-bold text-left w-full  mb-6">
-          Chat font size <Text>{chatFontSize}</Text>
+          Chat font size <Text>{defferedFontSizeSlider}</Text>
         </Text>
-        <Text className="text-white" style={{fontSize: chatFontSize}}>
+        <Text className="text-white" style={{fontSize: defferedFontSizeSlider}}>
           Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quibusdam,
           molestiae!
         </Text>
@@ -277,10 +268,11 @@ const Settings = ({navigation}: {navigation: any}) => {
           className="w-full"
           style={{height: 80, width: '100%'}}
           minimumValue={15}
-          value={chatFontSize}
+          value={defferedFontSizeSlider}
           maximumValue={25}
+          step={1}
           onValueChange={val => {
-            handleChangeFontSize(Math.round(val));
+            setFontSizeSlider(val);
           }}
           minimumTrackTintColor="#FFFFFF"
           maximumTrackTintColor="#000000"

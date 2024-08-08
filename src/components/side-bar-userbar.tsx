@@ -6,20 +6,11 @@ import {
   Image,
   Dimensions,
 } from 'react-native';
-import React, {useContext, useEffect, useState} from 'react';
-import colors from '../utils/colors';
+import React, {useContext} from 'react';
 //@ts-ignore
 import Icon from 'react-native-vector-icons/FontAwesome6';
-//@ts-ignore
-import Icon2 from 'react-native-vector-icons/FontAwesome';
-import {supabase} from '../utils/supabase';
 import {StoreContext} from '../context/store';
-import CONTEXT_ACTIONS from '../context/actions';
-
 import {scale} from 'react-native-size-matters';
-import HistorySearchBar from './history-search-bar';
-import HistoryList from './history-list';
-import ChangeTitleModal from './modal-change-history-title';
 
 const {height: screenHeight} = Dimensions.get('screen');
 const {height: windowHeight} = Dimensions.get('window');
@@ -27,7 +18,11 @@ const statusBarHeight = StatusBar.currentHeight || 24;
 const bottomBarHeight = screenHeight - windowHeight - statusBarHeight;
 const regex = /\([a-zA-Z]+\)/g;
 
-function UserBar() {
+function UserBar({navigation}: {navigation: any}) {
+  const {
+    store: {user},
+  } = useContext(StoreContext);
+
   return (
     <TouchableOpacity
       onPress={() => navigation.navigate('settings')}

@@ -78,7 +78,7 @@ function ChangeTitleModal({
             handleChangeTitle(titleEditDetails?.id, titleEditDetails?.title)
           }
           style={{gap: 5, padding: scale(5), paddingHorizontal: scale(10)}}
-          className="bg-green-100 rounded-xl p-1 px-3 flex flex-row justify-center items-center ">
+          className="bg-green-100 rounded-xl  flex flex-row justify-center items-center ">
           <Text
             style={{fontSize: scale(12)}}
             className="text-green-800 font-bold">

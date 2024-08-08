@@ -1,4 +1,4 @@
-import React, {useState, useContext} from 'react';
+import React, {useContext} from 'react';
 import {View, Text, StatusBar, TouchableOpacity} from 'react-native';
 import {StoreContext} from '../context/store';
 import Popover from 'react-native-popover-view/dist/Popover';
@@ -17,11 +17,13 @@ function HistoryListItem({
   setSearchText,
   handleChangeTitleOpenModal,
   navigation,
+  lastItem,
 }: {
   item: chatHistoryType;
   handleChangeTitleOpenModal: Function;
   setSearchText: Function;
   navigation: any;
+  lastItem: boolean;
 }) {
   const {dispatch} = useContext(StoreContext);
 
@@ -82,19 +84,12 @@ function HistoryListItem({
       console.log('errrr', e);
     }
   };
-  // const historyPopoverItems = [
-  //   {
-  //     title: 'Edit',
-  //     onPress: setTitleEditDetails({id: item.id, title: item.title}),
-  //     icon: 'pen',
-  //   },
-  // ];
 
   return (
     <View
       key={item.id}
-      style={{gap: 10}}
-      className="flex flex-row  items-center justify-center">
+      style={{gap: 10, padding: 10, borderBottomWidth: !lastItem ? 0.2 : 0}}
+      className="flex flex-row  items-center   border-gray-500/30  justify-center">
       <TouchableOpacity
         onPress={() => handleSelectChat(item.id)}
         className="flex-1">
@@ -140,7 +135,7 @@ function HistoryListItem({
           <Text style={{fontSize: scale(12)}}>Edit Title</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          className="  flex flex-row items-center  rounded-lg bg-gray-500/5"
+          className="  flex flex-row items-center mt-3 rounded-lg bg-gray-500/5"
           style={{gap: 15, padding: scale(8)}}
           onPress={() => handleAddToFavourite(item.id, item.favourite)}>
           {!item.favourite ? (
@@ -153,7 +148,7 @@ function HistoryListItem({
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
-          className="flex flex-row items-center rounded-lg bg-gray-500/5"
+          className="flex flex-row mt-3 items-center rounded-lg bg-gray-500/5"
           style={{gap: 15, padding: scale(8)}}
           onPress={() => handleDelete(item.id)}>
           <Icon name="trash" size={scale(14)} color="red" />

@@ -5,7 +5,6 @@ import {
   TextInput,
   Platform,
   ToastAndroid,
-  Text,
 } from 'react-native';
 import Voice from '@react-native-voice/voice';
 //@ts-ignore
@@ -18,24 +17,17 @@ import env from '../utils/env';
 import {supabase} from '../utils/supabase';
 import {StoreContext} from '../context/store';
 import CONTEXT_ACTIONS from '../context/actions';
-import MyModal from './my-modal';
 import Tts from 'react-native-tts';
 import {scale} from 'react-native-size-matters';
+import ImagePrompModal from './modal-image-prompts';
 
 function BottomBar({scrollViewRef}: any) {
   const [inputValue, setInputValue] = useState('');
   const [showSendBtn, setShowSendBtn] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
-  const [textInputValue, setTextInputValue] = useState('');
   const [loadingResponse, setLoadingResponse] = useState(false);
   const [imageData, setImageData] = useState([]);
-  const modalRef = useRef(null);
-  const imagePrompts = [
-    'Tell me about the image',
-    'solve the promblem in the image',
-    'identify the colors on the image',
-  ];
 
   const {
     store: {chatData, currentChatId, user, autoRead},
@@ -206,7 +198,7 @@ function BottomBar({scrollViewRef}: any) {
       const response = await result.response;
       const responseText = response.text();
 
-      console.log('autoREad', autoRead);
+      console.log('autoREad  sent __', autoRead);
       newChatData = [
         {role: 'model', parts: [{text: responseText}]},
         ...newChatData,
@@ -215,7 +207,10 @@ function BottomBar({scrollViewRef}: any) {
         type: CONTEXT_ACTIONS.SET_CHAT_DATA,
         payload: newChatData,
       });
-      if (autoRead) Tts.speak(responseText);
+      if (autoRead) {
+        Tts.speak(responseText);
+        console.log('speak');
+      }
     } catch (e) {
       console.error('Something went wrong', e);
     }
@@ -342,44 +337,11 @@ function BottomBar({scrollViewRef}: any) {
           </TouchableOpacity>
         )}
       </View>
-      <MyModal
-        dismissible={false}
+      <ImagePrompModal
         setModalVisible={setModalVisible}
-        modalVisible={modalVisible}>
-        <Text
-          style={{fontSize: scale(15), marginBottom: scale(10)}}
-          className="text-white  font-bold text-left w-full">
-          Image prompt
-        </Text>
-        {imagePrompts.map((prompt, index) => (
-          <TouchableOpacity
-            key={index}
-            onPress={() => handleModalSelectImagePromptText(prompt)}
-            style={{marginTop: scale(8), padding: scale(10)}}
-            className="bg-black w-full rounded-lg">
-            <Text style={{fontSize: scale(12)}} className="text-white">
-              {prompt}
-            </Text>
-          </TouchableOpacity>
-        ))}
-        <TextInput
-          ref={modalRef}
-          onChangeText={(text: string) => {
-            setTextInputValue(text);
-          }}
-          onSubmitEditing={() => {
-            handleModalSelectImagePromptText(textInputValue);
-          }}
-          style={{
-            padding: scale(8),
-            fontSize: scale(12),
-            marginTop: scale(10),
-          }}
-          className="bg-gray-500/20 rounded-xl text-white placeholder-slate-200  w-full"
-          placeholder="enter custom prompt"
-          placeholderTextColor="gray"
-        />
-      </MyModal>
+        modalVisible={modalVisible}
+        handleModalSelectImagePromptText={handleModalSelectImagePromptText}
+      />
     </>
   );
 }

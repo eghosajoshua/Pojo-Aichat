@@ -3,7 +3,6 @@ import {
   Text,
   StatusBar,
   TouchableOpacity,
-  Image,
   Dimensions,
 } from 'react-native';
 import React, {useContext, useEffect, useState} from 'react';
@@ -15,18 +14,11 @@ import Icon2 from 'react-native-vector-icons/FontAwesome';
 import {supabase} from '../utils/supabase';
 import {StoreContext} from '../context/store';
 import CONTEXT_ACTIONS from '../context/actions';
-
 import {scale} from 'react-native-size-matters';
 import HistorySearchBar from './history-search-bar';
 import HistoryList from './history-list';
 import ChangeTitleModal from './modal-change-history-title';
 import UserBar from './side-bar-userbar';
-
-const {height: screenHeight} = Dimensions.get('screen');
-const {height: windowHeight} = Dimensions.get('window');
-const statusBarHeight = StatusBar.currentHeight || 24;
-const bottomBarHeight = screenHeight - windowHeight - statusBarHeight;
-const regex = /\([a-zA-Z]+\)/g;
 
 const SideBar = ({navigation}: {navigation: any}) => {
   const [showFavourites, setShowFavourites] = useState(false);
@@ -43,12 +35,8 @@ const SideBar = ({navigation}: {navigation: any}) => {
     store: {user, chatHistory},
   } = useContext(StoreContext);
 
-  console.log(chatHistory);
-
   useEffect(() => {
     const getChatHistory = async () => {
-      console.log('hissss');
-
       try {
         if (user !== null) {
           const {data, error} = await supabase
@@ -137,7 +125,7 @@ const SideBar = ({navigation}: {navigation: any}) => {
         <View
           style={{marginBottom: scale(15), height: scale(1)}}
           className="bg-gray-500/70 rounded-full "></View>
-        <UserBar />
+        <UserBar navigation={navigation} />
       </View>
       <ChangeTitleModal
         setModalVisible={setModalVisible}

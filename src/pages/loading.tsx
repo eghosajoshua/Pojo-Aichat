@@ -8,8 +8,6 @@ const Loading = ({navigation}: {navigation: any}) => {
   const {dispatch} = useContext(StoreContext);
 
   useEffect(() => {
-    console.log('loading');
-
     const setFontSize = async () => {
       const fontSize = await AsyncStorage.getItem('fontSize');
       if (fontSize) {
@@ -31,14 +29,10 @@ const Loading = ({navigation}: {navigation: any}) => {
 
     const getSession = async () => {
       const {data} = await supabase.auth.getSession();
-      console.log(data.session?.user, 'loading screen');
-
       if (data.session !== null) {
-        //user session exist
         dispatch({type: CONTEXT_ACTIONS.SET_USER, payload: data.session?.user});
         navigation.navigate('home');
       } else {
-        //user session does not exit
         navigation.navigate('login');
       }
     };
