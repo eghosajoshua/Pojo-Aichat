@@ -21,7 +21,7 @@ import {scale} from 'react-native-size-matters';
 import Animated, {SlideInDown, SlideOutDown} from 'react-native-reanimated';
 import LoginEmailForm from '../components/login-email-form';
 import SignupEmailForm from '../components/signup-email-form';
-import ConfirmEmail from '../components/confirm-Email';
+import ConfirmEmail from '../components/confirm-email';
 
 const Login = ({navigation}: any) => {
   const {dispatch} = useContext(StoreContext) || {dispatch: null};

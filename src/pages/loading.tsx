@@ -31,7 +31,7 @@ const Loading = ({navigation}: {navigation: any}) => {
       const {data} = await supabase.auth.getSession();
       if (data.session !== null) {
         dispatch({type: CONTEXT_ACTIONS.SET_USER, payload: data.session?.user});
-        navigation.navigate('home');
+        navigation.navigate('payment');
       } else {
         navigation.navigate('login');
       }

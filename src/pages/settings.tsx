@@ -50,7 +50,7 @@ const Settings = ({navigation}: {navigation: any}) => {
 
     dispatch({
       type: CONTEXT_ACTIONS.SET_AUTO_READ,
-      payload: isEnabled ? 'true' : 'false',
+      payload: isEnabled,
     });
     AsyncStorage.setItem('autoRead', isEnabled ? 'true' : 'false');
   }, [isEnabled]);
@@ -244,8 +244,6 @@ const Settings = ({navigation}: {navigation: any}) => {
                 thumbColor={isEnabled ? colors.LightBlue : '#f4f3f4'}
                 ios_backgroundColor="#3e3e3e"
                 onValueChange={val => {
-                  console.log(val);
-
                   setIsEnabled(prev => !prev);
                 }}
                 value={isEnabled}

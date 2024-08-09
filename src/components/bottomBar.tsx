@@ -209,7 +209,7 @@ function BottomBar({scrollViewRef}: any) {
       });
       if (autoRead) {
         Tts.speak(responseText);
-        console.log('speak');
+        console.log('speak', typeof autoRead);
       }
     } catch (e) {
       console.error('Something went wrong', e);
