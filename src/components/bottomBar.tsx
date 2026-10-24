@@ -21,6 +21,8 @@ import Tts from 'react-native-tts';
 import {scale} from 'react-native-size-matters';
 import ImagePrompModal from './modal-image-prompts';
 
+//note
+
 function BottomBar({scrollViewRef}: any) {
   const [inputValue, setInputValue] = useState('');
   const [showSendBtn, setShowSendBtn] = useState(false);
