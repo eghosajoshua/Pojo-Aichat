@@ -46,6 +46,43 @@ If everything is set up _correctly_, you should see your new app running in your
 
 This is one way to run your app — you can also run it directly from within Android Studio and Xcode respectively.
 
+## Build a signed Android release APK on macOS
+
+Install Android Studio, then use its SDK Manager to install Android SDK Platform 34, Android SDK Build-Tools 34.0.0, Android SDK Platform-Tools, and NDK 26.1.10909125. Install JDK 17 and configure your terminal to use it:
+
+```bash
+export JAVA_HOME=$(/usr/libexec/java_home -v 17)
+export ANDROID_HOME="$HOME/Library/Android/sdk"
+export PATH="$PATH:$ANDROID_HOME/platform-tools"
+```
+
+Create an upload keystore outside the repository. Keep a secure backup; losing this key can prevent you from updating builds signed with it.
+
+```bash
+mkdir -p "$HOME/.android"
+keytool -genkeypair -v -storetype JKS \
+  -keystore "$HOME/.android/pojoai-upload.keystore" \
+  -alias pojoai-upload -keyalg RSA -keysize 2048 -validity 10000
+```
+
+Enter and securely save the passwords when prompted. Add the following properties to `~/.gradle/gradle.properties` (create the file if needed), replacing the placeholders with your own values:
+
+```properties
+MYAPP_UPLOAD_STORE_FILE=/Users/your-user/.android/pojoai-upload.keystore
+MYAPP_UPLOAD_KEY_ALIAS=pojoai-upload
+MYAPP_UPLOAD_STORE_PASSWORD=your-store-password
+MYAPP_UPLOAD_KEY_PASSWORD=your-key-password
+```
+
+Do not put signing passwords or the keystore in the repository. Build the release APK from the project root:
+
+```bash
+cd android
+./gradlew assembleRelease
+```
+
+The signed APK is created at `android/app/build/outputs/apk/release/app-release.apk`. Unlike a debug APK, it bundles the JavaScript and does not need Metro running.
+
 ## Step 3: Modifying your App
 
 Now that you have successfully run the app, let's modify it.

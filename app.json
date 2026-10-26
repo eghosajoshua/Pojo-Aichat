@@ -1,4 +1,10 @@
 {
   "name": "aichat",
-  "displayName": "Pojo AiChat"
+  "displayName": "Pojo AiChat",
+  "icon": "./images/logo.png",
+  "extra": {
+    "eas": {
+      "projectId": "3411272d-bb39-46a0-9df1-02de9c5d6057"
+    }
+  }
 }
