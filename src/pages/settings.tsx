@@ -16,8 +16,6 @@ import CONTEXT_ACTIONS from '../context/actions';
 import Icon from 'react-native-vector-icons/FontAwesome';
 //@ts-ignore
 import Icon6 from 'react-native-vector-icons/FontAwesome6';
-import {supabase} from '../utils/supabase';
-import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import {useContext, useDeferredValue, useEffect, useState} from 'react';
 import {StoreContext} from '../context/store';
 import env from '../utils/env';
@@ -39,9 +37,6 @@ const Settings = ({navigation}: {navigation: any}) => {
   const [fontSizeSlider, setFontSizeSlider] = useState(chatFontSize);
   const defferedFontSizeSlider = useDeferredValue(fontSizeSlider);
 
-  GoogleSignin.configure({
-    webClientId: env.GOOGLE_WEB_CLIENT_ID,
-  });
   const [modalVisible, setModalVisible] = useState(false);
   const [isEnabled, setIsEnabled] = useState(autoRead);
 
@@ -59,25 +54,9 @@ const Settings = ({navigation}: {navigation: any}) => {
     store: {user},
   } = useContext(StoreContext);
 
-  const handleSignOut = async () => {
-    try {
-      await GoogleSignin.signOut();
-      const {error} = await supabase.auth.signOut();
-      if (error === null) {
-        //sign out
-        navigation.navigate('login');
-      } else {
-        if (Platform.OS == 'android') {
-          ToastAndroid.showWithGravity(
-            'something went wrong',
-            ToastAndroid.SHORT,
-            ToastAndroid.CENTER,
-          );
-        }
-      }
-    } catch (error) {
-      console.error(error);
-    }
+  const handleSignOut = () => {
+    dispatch({type: CONTEXT_ACTIONS.SET_CHAT_DATA, payload: []});
+    navigation.navigate('login');
   };
 
   useEffect(() => {
@@ -102,7 +81,11 @@ const Settings = ({navigation}: {navigation: any}) => {
     },
     {
       title: 'Clear History',
-      onPress: () => {},
+      onPress: () => {
+        dispatch({type: CONTEXT_ACTIONS.SET_CHAT_HISTORY, payload: []});
+        dispatch({type: CONTEXT_ACTIONS.SET_CHAT_DATA, payload: []});
+        dispatch({type: CONTEXT_ACTIONS.SET_CURRENT_CHAT_ID, payload: null});
+      },
       icon: 'history',
     },
     {

@@ -9,7 +9,6 @@ import Icon from 'react-native-vector-icons/FontAwesome6';
 //@ts-ignore
 import Icon2 from 'react-native-vector-icons/FontAwesome';
 import {chatHistoryType} from '../types/type';
-import {supabase} from '../utils/supabase';
 import CONTEXT_ACTIONS from '../context/actions';
 
 function HistoryListItem({
@@ -27,62 +26,21 @@ function HistoryListItem({
 }) {
   const {dispatch} = useContext(StoreContext);
 
-  const handleSelectChat = async (id: number) => {
-    try {
-      const {data, error} = await supabase
-        .from('chat_history')
-        .select('chats')
-        .eq('id', id)
-        .single();
-      if (error === null) {
-        dispatch({type: CONTEXT_ACTIONS.SET_CURRENT_CHAT_ID, payload: id});
-        dispatch({type: CONTEXT_ACTIONS.SET_CHAT_DATA, payload: data.chats});
-      } else {
-        console.error(error, 'nawa');
-      }
-    } catch (e) {
-      console.log('errrr', e);
-    }
+  const handleSelectChat = (id: number) => {
+    dispatch({type: CONTEXT_ACTIONS.SET_CURRENT_CHAT_ID, payload: id});
+    dispatch({type: CONTEXT_ACTIONS.SET_CHAT_DATA, payload: item.chats || []});
     setSearchText('');
     navigation.closeDrawer();
   };
-  const handleAddToFavourite = async (id: any, favourite: Boolean) => {
-    try {
-      const {error} = await supabase
-        .from('chat_history')
-        .update({favourite: !favourite})
-        .eq('id', id)
-        .single();
-      if (error === null) {
-        dispatch({
-          type: CONTEXT_ACTIONS.EDIT_CHAT_HISTORY_FAVOURITE,
-          payload: {favourite: !favourite, id: id},
-        });
-      } else {
-        console.error(error, 'nawa');
-      }
-    } catch (e) {
-      console.log('errrr', e);
-    }
+  const handleAddToFavourite = (id: any, favourite: Boolean) => {
+    dispatch({
+      type: CONTEXT_ACTIONS.EDIT_CHAT_HISTORY_FAVOURITE,
+      payload: {favourite: !favourite, id: id},
+    });
   };
 
-  const handleDelete = async (id: any) => {
-    console.log(id);
-
-    try {
-      const {status} = await supabase
-        .from('chat_history')
-        .delete()
-        .eq('id', id);
-      console.log(status, '-error');
-
-      dispatch({
-        type: CONTEXT_ACTIONS.DELETE_CHAT_HISTORY,
-        payload: {id: id},
-      });
-    } catch (e) {
-      console.log('errrr', e);
-    }
+  const handleDelete = (id: any) => {
+    dispatch({type: CONTEXT_ACTIONS.DELETE_CHAT_HISTORY, payload: {id: id}});
   };
 
   return (

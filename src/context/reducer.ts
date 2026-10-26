@@ -1,6 +1,12 @@
 import CONTEXT_ACTIONS from './actions';
 const reducer = (state: any, action: any) => {
   switch (action.type) {
+    case 'HYDRATE_STORE':
+      return {
+        ...state,
+        ...action.payload,
+        user: state.user,
+      };
     case CONTEXT_ACTIONS.SET_USER:
       return {
         ...state,

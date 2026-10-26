@@ -1,12 +1,14 @@
-import {View, Text, TouchableOpacity, TextInput} from 'react-native';
+import {View, Text, TouchableOpacity, TextInput, Alert} from 'react-native';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
-import {supabase} from '../utils/supabase';
 import {StoreContext} from '../context/store';
 import CONTEXT_ACTIONS from '../context/actions';
 import {useContext} from 'react';
 import {scale} from 'react-native-size-matters';
 import Animated, {FadeIn, FadeOut} from 'react-native-reanimated';
+/*  remote login imports kept for restoration:
+import {supabase} from '../utils/supabase';
+*/
 
 const LoginEmailForm = ({
   setIsLoginFormVisible,
@@ -24,31 +26,33 @@ const LoginEmailForm = ({
     email: Yup.string().email('Invalid email').required('Required'),
   });
 
-  const handleEmailLogin = async (loginDetails: {
+  /*  Supabase email login:
+  const handleEmailLoginWithSupabase = async (loginDetails) => {
+    const {data, error} = await supabase.auth.signInWithPassword(loginDetails);
+    if (error === null) {
+      dispatch({type: CONTEXT_ACTIONS.SET_USER, payload: data.user});
+      navigation.navigate('home');
+    }
+  };
+  */
+
+  const handleEmailLogin = (loginDetails: {
     email: string;
     password: string;
   }) => {
-    console.log(loginDetails);
-
-    try {
-      const {data, error} = await supabase.auth.signInWithPassword({
+    dispatch({
+      type: CONTEXT_ACTIONS.SET_USER,
+      payload: {
+        id: 'portfolio-demo-user',
         email: loginDetails.email,
-        password: loginDetails.password,
-      });
-
-      if (error === null) {
-        //sign in
-        dispatch({type: CONTEXT_ACTIONS.SET_USER, payload: data.user});
-        dispatch({type: CONTEXT_ACTIONS.SET_CHAT_HISTORY, payload: []});
-        dispatch({type: CONTEXT_ACTIONS.SET_CURRENT_CHAT_ID, payload: null});
-        dispatch({type: CONTEXT_ACTIONS.SET_CHAT_DATA, payload: []});
-        navigation.navigate('home');
-      } else {
-        console.error(error, 'sign in error');
-      }
-    } catch (e) {
-      console.error(e);
-    }
+        user_metadata: {name: 'Demo User', avatar_url: null},
+      },
+    });
+    Alert.alert(
+      'Portfolio Demo',
+      'No sign-in occurred. Your demo session is saved locally on this device.',
+      [{text: 'Continue', onPress: () => navigation.navigate('payment')}],
+    );
   };
 
   return (
@@ -89,10 +93,10 @@ const LoginEmailForm = ({
                   paddingHorizontal: scale(20),
                   paddingVertical: scale(12),
                   fontSize: scale(12),
+                  color: 'white',
                 }}
                 keyboardType="email-address"
                 className="bg-gray-800 rounded-full"
-                placeholder="enter email"
               />
               {errors.email && touched.email ? (
                 <Text className="text-red-400 text-center">{errors.email}</Text>
@@ -112,10 +116,10 @@ const LoginEmailForm = ({
                   paddingHorizontal: scale(20),
                   paddingVertical: scale(12),
                   fontSize: scale(12),
+                  color: 'white',
                 }}
                 keyboardType="email-address"
                 className="bg-gray-800 rounded-full"
-                placeholder="enter password"
               />
               {errors.password && touched.password ? (
                 <Text className="text-red-400 text-center">

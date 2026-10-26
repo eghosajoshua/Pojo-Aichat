@@ -1,8 +1,8 @@
 import {StatusBar} from 'react-native';
 import Popover from 'react-native-popover-view/dist/Popover';
 import {PopoverPlacement} from 'react-native-popover-view';
-import Clipboard from '@react-native-clipboard/clipboard';
-import Tts from 'react-native-tts';
+import * as Clipboard from 'expo-clipboard';
+import * as Speech from 'expo-speech';
 import {scale} from 'react-native-size-matters';
 import {useState} from 'react';
 import markdownToTxt from 'markdown-to-txt';
@@ -18,7 +18,7 @@ const ChatPopover = ({
   const [copied, setCopied] = useState(false);
 
   const handleCopyToClipboard = () => {
-    Clipboard.setString(markdownToTxt(chatText));
+    Clipboard.setStringAsync(markdownToTxt(chatText));
     setCopied(true);
     setTimeout(() => {
       setCopied(false);
@@ -26,7 +26,7 @@ const ChatPopover = ({
   };
 
   const handleSpeakText = () => {
-    Tts.speak(markdownToTxt(chatText));
+    Speech.speak(markdownToTxt(chatText));
   };
 
   const popOverItems = [

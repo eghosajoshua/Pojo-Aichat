@@ -9,7 +9,7 @@ import {
 import {useEffect, useState} from 'react';
 //@ts-ignore
 import Icon from 'react-native-vector-icons/AntDesign';
-import LinearGradient from 'react-native-linear-gradient';
+import {LinearGradient} from 'expo-linear-gradient';
 import Animated, {
   Easing,
   useSharedValue,

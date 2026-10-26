@@ -6,18 +6,16 @@ import {
   Platform,
   ToastAndroid,
 } from 'react-native';
-import Voice from '@react-native-voice/voice';
 //@ts-ignore
 import Icon from 'react-native-vector-icons/FontAwesome6';
 //@ts-ignore
 import IconIon from 'react-native-vector-icons/Ionicons';
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import * as ImagePicker from 'expo-image-picker';
 import {GoogleGenerativeAI} from '@google/generative-ai';
 import env from '../utils/env';
-import {supabase} from '../utils/supabase';
 import {StoreContext} from '../context/store';
 import CONTEXT_ACTIONS from '../context/actions';
-import Tts from 'react-native-tts';
+import * as Speech from 'expo-speech';
 import {scale} from 'react-native-size-matters';
 import ImagePrompModal from './modal-image-prompts';
 
@@ -39,107 +37,59 @@ function BottomBar({scrollViewRef}: any) {
   const genAi = new GoogleGenerativeAI(env.GEMINI_API_KEY);
   const model = genAi.getGenerativeModel({model: 'gemini-1.5-flash'});
 
-  //update chatDb
   useEffect(() => {
-    const uploadChatData = async () => {
-      if (chatData.length == 0) return;
-      let chatTitle = chatData[chatData.length - 1].parts[0].text.substring(
-        0,
-        15,
-      );
-      try {
-        if (currentChatId === null) {
-          //create new chat history
-          const {data} = await supabase
-            .from('chat_history')
-            .insert({
-              user_id: user.id,
-              chats: chatData,
-              title: chatTitle,
-            })
-            .select('id')
-            .single();
-
-          dispatch({
-            type: CONTEXT_ACTIONS.SET_CURRENT_CHAT_ID,
-            payload: data?.id,
-          });
-          dispatch({
-            type: CONTEXT_ACTIONS.UPDATE_CHAT_HISTORY,
-            payload: {favourite: false, id: data?.id, title: chatTitle},
-          });
-        } else {
-          //update chat history
-          const {error} = await supabase
-            .from('chat_history')
-            .update({
-              chats: chatData,
-            })
-            .eq('id', currentChatId);
-        }
-      } catch (e) {
-        // console.error('failed to upload chat', e);
-      }
-    };
-    uploadChatData();
+    if (chatData.length === 0) return;
+    const title = chatData[chatData.length - 1].parts[0].text.substring(0, 15);
+    if (currentChatId === null) {
+      const id = Date.now();
+      dispatch({type: CONTEXT_ACTIONS.SET_CURRENT_CHAT_ID, payload: id});
+      dispatch({
+        type: CONTEXT_ACTIONS.UPDATE_CHAT_HISTORY,
+        payload: {
+          id,
+          title,
+          favourite: false,
+          created_at: new Date().toISOString(),
+          chats: chatData,
+        },
+      });
+    } else {
+      dispatch({
+        type: CONTEXT_ACTIONS.EDIT_CHAT_HISTORY_TITLE,
+        payload: {id: currentChatId, title, chats: chatData},
+      });
+    }
   }, [chatData]);
 
-  const handleImagePick = () => {
-    launchImageLibrary(
-      {mediaType: 'photo', includeBase64: true},
-      (response: any) => {
-        if (response.assets && response.assets.length > 0) {
-          const {uri, base64, type} = response.assets[0];
-
-          let newChatData = [{role: 'user', parts: [{text: uri}]}, ...chatData];
-
-          dispatch({
-            type: CONTEXT_ACTIONS.SET_CHAT_DATA,
-            payload: newChatData,
-          });
-
-          ImagePrompt(
-            [
-              {
-                inlineData: {
-                  data: base64,
-                  mimeType: type,
-                },
-              },
-            ],
-            newChatData,
-          );
-        }
-      },
-    );
+  const handleImagePick = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      base64: true,
+    });
+    if (!result.canceled && result.assets[0]) {
+      const {uri, base64, mimeType} = result.assets[0];
+      const newChatData = [{role: 'user', parts: [{text: uri}]}, ...chatData];
+      dispatch({type: CONTEXT_ACTIONS.SET_CHAT_DATA, payload: newChatData});
+      ImagePrompt(
+        [{inlineData: {data: base64, mimeType: mimeType || 'image/jpeg'}}],
+        newChatData,
+      );
+    }
   };
 
-  const handleCameraPick = () => {
-    launchCamera({mediaType: 'photo', includeBase64: true}, (response: any) => {
-      if (response.assets && response.assets.length > 0) {
-        const {uri, base64, type} = response.assets[0];
-        // setUploadedImageUri(prev => [...prev, uri]);
-
-        const newChatData = [{role: 'user', parts: [{text: uri}]}, ...chatData];
-
-        dispatch({
-          type: CONTEXT_ACTIONS.SET_CHAT_DATA,
-          payload: newChatData,
-        });
-
-        ImagePrompt(
-          [
-            {
-              inlineData: {
-                data: base64,
-                mimeType: type,
-              },
-            },
-          ],
-          newChatData,
-        );
-      }
-    });
+  const handleCameraPick = async () => {
+    const permission = await ImagePicker.requestCameraPermissionsAsync();
+    if (!permission.granted) return;
+    const result = await ImagePicker.launchCameraAsync({base64: true});
+    if (!result.canceled && result.assets[0]) {
+      const {uri, base64, mimeType} = result.assets[0];
+      const newChatData = [{role: 'user', parts: [{text: uri}]}, ...chatData];
+      dispatch({type: CONTEXT_ACTIONS.SET_CHAT_DATA, payload: newChatData});
+      ImagePrompt(
+        [{inlineData: {data: base64, mimeType: mimeType || 'image/jpeg'}}],
+        newChatData,
+      );
+    }
   };
 
   const ImagePrompt = async (imageParts: any, newChatData: any) => {
@@ -170,7 +120,7 @@ function BottomBar({scrollViewRef}: any) {
         type: CONTEXT_ACTIONS.SET_CHAT_DATA,
         payload: newChatData_,
       });
-      if (autoRead) Tts.speak(restText);
+      if (autoRead) Speech.speak(restText);
     } catch (e) {
       console.error(e);
     }
@@ -210,7 +160,7 @@ function BottomBar({scrollViewRef}: any) {
         payload: newChatData,
       });
       if (autoRead) {
-        Tts.speak(responseText);
+        Speech.speak(responseText);
         console.log('speak', typeof autoRead);
       }
     } catch (e) {
@@ -229,70 +179,13 @@ function BottomBar({scrollViewRef}: any) {
     }
   };
 
-  const handleVoiceStart = async () => {
-    try {
-      await Voice.start('en-GB');
-    } catch (error) {
-      if (Platform.OS == 'android') {
-        ToastAndroid.showWithGravity(
-          'could not start voice recognition',
-          ToastAndroid.SHORT,
-          ToastAndroid.CENTER,
-        );
-      }
-    }
+  const handleVoiceStart = () => {
+    setIsRecording(true);
   };
 
-  const handleVoiceStop = async () => {
+  const handleVoiceStop = () => {
     setIsRecording(false);
-    try {
-      await Voice.stop();
-    } catch (error) {
-      if (Platform.OS == 'android') {
-        ToastAndroid.showWithGravity(
-          'something went wrong',
-          ToastAndroid.SHORT,
-          ToastAndroid.CENTER,
-        );
-      }
-    }
   };
-
-  //speech events
-  useEffect(() => {
-    Voice.onSpeechEnd = event => {
-      setIsRecording(false);
-    };
-
-    Voice.onSpeechStart = event => {
-      setIsRecording(true);
-    };
-
-    Voice.onSpeechResults = event => {
-      const value = event.value;
-      if (value && value.length > 0) {
-        setInputValue(value[0]);
-        setShowSendBtn(true);
-      }
-    };
-
-    Voice.onSpeechError = event => {
-      setIsRecording(false);
-      if (Platform.OS == 'android') {
-        ToastAndroid.showWithGravity(
-          'could not generate speech',
-          ToastAndroid.SHORT,
-          ToastAndroid.CENTER,
-        );
-      }
-    };
-
-    return () => {
-      Voice.destroy().then(() => {
-        Voice.removeAllListeners();
-      });
-    };
-  }, []);
 
   return (
     <>
@@ -318,6 +211,7 @@ function BottomBar({scrollViewRef}: any) {
             padding: scale(8),
             maxHeight: scale(70),
             fontSize: scale(12),
+            color: 'white',
           }}
           placeholder="Enter message"
           placeholderTextColor="gray"

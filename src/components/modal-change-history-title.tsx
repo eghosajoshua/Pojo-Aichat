@@ -2,7 +2,6 @@ import {View, Text, TouchableOpacity} from 'react-native';
 import {TextInput} from 'react-native-gesture-handler';
 import MyModal from './my-modal';
 import {scale} from 'react-native-size-matters';
-import {supabase} from '../utils/supabase';
 import {StoreContext} from '../context/store';
 import CONTEXT_ACTIONS from '../context/actions';
 import React, {useContext} from 'react';
@@ -20,25 +19,12 @@ function ChangeTitleModal({
 }) {
   const {dispatch} = useContext(StoreContext);
 
-  const handleChangeTitle = async (id: any, title: string | undefined) => {
-    try {
-      const {error} = await supabase
-        .from('chat_history')
-        .update({title: title})
-        .eq('id', id)
-        .single();
-      if (error === null) {
-        dispatch({
-          type: CONTEXT_ACTIONS.EDIT_CHAT_HISTORY_TITLE,
-          payload: {title: title, id: id},
-        });
-        setModalVisible(false);
-      } else {
-        console.error(error, 'nawa');
-      }
-    } catch (e) {
-      console.log('errrr', e);
-    }
+  const handleChangeTitle = (id: any, title: string | undefined) => {
+    dispatch({
+      type: CONTEXT_ACTIONS.EDIT_CHAT_HISTORY_TITLE,
+      payload: {title: title, id: id},
+    });
+    setModalVisible(false);
   };
 
   return (

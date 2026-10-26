@@ -12,4 +12,5 @@ export interface chatHistoryType {
   title: string;
   favourite: boolean;
   created_at: string;
+  chats?: {parts: {text: string}[]; role: string}[];
 }

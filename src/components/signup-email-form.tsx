@@ -6,17 +6,12 @@ import {
   ToastAndroid,
   Platform,
   TextInput,
+  Alert,
 } from 'react-native';
 //@ts-ignore
 import Icon from 'react-native-vector-icons/FontAwesome6';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
-import {
-  GoogleSignin,
-  statusCodes,
-} from '@react-native-google-signin/google-signin';
-import {supabase} from '../utils/supabase';
-import env from '../utils/env';
 import {StoreContext} from '../context/store';
 import CONTEXT_ACTIONS from '../context/actions';
 import {useContext, useState} from 'react';
@@ -28,13 +23,19 @@ import Animated, {
   SlideOutDown,
 } from 'react-native-reanimated';
 import {ALERT_TYPE, Toast} from 'react-native-alert-notification';
+/*  remote signup imports, kept commented for restoration:
+import {supabase} from '../utils/supabase';
+import env from '../utils/env';
+*/
 
 const SignupEmailForm = ({
+  navigation,
   setCurrentUserEmail,
   setIsForgotPasswordVisible,
   setIsLoginFormVisible,
   setIsSignupFormVisible,
 }: {
+  navigation: any;
   setCurrentUserEmail: Function;
   setIsForgotPasswordVisible: Function;
   setIsLoginFormVisible: Function;
@@ -66,23 +67,29 @@ const SignupEmailForm = ({
       });
       return;
     }
+    /*  Supabase signup flow:
     try {
-      const {data: user, error} = await supabase.auth.signUp({
+      const {error} = await supabase.auth.signUp({
         email: data.email,
         password: data.password,
       });
       if (error === null) {
-        //confirm otp
         setCurrentUserEmail(data.email);
         setIsForgotPasswordVisible(true);
         setIsLoginFormVisible(false);
         setIsSignupFormVisible(false);
-      } else {
-        console.error(error, 'sign up error');
       }
-    } catch (e) {
-      console.error(e);
+    } catch (error) {
+      console.error(error);
     }
+    */
+
+    setCurrentUserEmail(data.email);
+    Alert.alert(
+      'Portfolio Demo',
+      'No account was created. Your signup details are not saved or sent anywhere.',
+      [{text: 'Continue Demo', onPress: () => navigation.navigate('payment')}],
+    );
   };
 
   return (
@@ -123,10 +130,10 @@ const SignupEmailForm = ({
                   paddingHorizontal: scale(20),
                   paddingVertical: scale(12),
                   fontSize: scale(12),
+                  color: 'white',
                 }}
                 keyboardType="email-address"
                 className="bg-gray-800 rounded-full"
-                placeholder="enter email"
               />
               {errors.email && touched.email ? (
                 <Text className="text-red-400 text-center">{errors.email}</Text>
@@ -146,10 +153,10 @@ const SignupEmailForm = ({
                   paddingHorizontal: scale(20),
                   paddingVertical: scale(12),
                   fontSize: scale(12),
+                  color: 'white',
                 }}
                 keyboardType="email-address"
                 className="bg-gray-800 rounded-full"
-                placeholder="enter password"
               />
               {errors.password && touched.password ? (
                 <Text className="text-red-400 text-center">
@@ -171,10 +178,10 @@ const SignupEmailForm = ({
                   paddingHorizontal: scale(20),
                   paddingVertical: scale(12),
                   fontSize: scale(12),
+                  color: 'white',
                 }}
                 keyboardType="email-address"
                 className="bg-gray-800 rounded-full "
-                placeholder="re-enter password"
               />
               {errors.confirmPassword && touched.confirmPassword ? (
                 <Text className="text-red-400 text-center">

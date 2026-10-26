@@ -11,7 +11,6 @@ import colors from '../utils/colors';
 import Icon from 'react-native-vector-icons/FontAwesome6';
 //@ts-ignore
 import Icon2 from 'react-native-vector-icons/FontAwesome';
-import {supabase} from '../utils/supabase';
 import {StoreContext} from '../context/store';
 import CONTEXT_ACTIONS from '../context/actions';
 import {scale} from 'react-native-size-matters';
@@ -35,26 +34,7 @@ const SideBar = ({navigation}: {navigation: any}) => {
     store: {user, chatHistory},
   } = useContext(StoreContext);
 
-  useEffect(() => {
-    const getChatHistory = async () => {
-      try {
-        if (user !== null) {
-          const {data, error} = await supabase
-            .from('chat_history')
-            .select('title,id,favourite,created_at')
-            .eq('user_id', user.id);
-          if (error === null) {
-            dispatch({type: CONTEXT_ACTIONS.SET_CHAT_HISTORY, payload: data});
-          }
-        } else {
-          console.log('user is null');
-        }
-      } catch (e) {
-        console.error('chat history error', e);
-      }
-    };
-    getChatHistory();
-  }, []);
+  useEffect(() => {}, []);
 
   const handleChangeTitleOpenModal = async (id: any, title: string) => {
     setModalVisible(true);

@@ -1,6 +1,8 @@
 import {View, Text} from 'react-native';
 import React, {useContext, useEffect} from 'react';
+/* Import kept for reference:
 import {supabase} from '../utils/supabase';
+*/
 import {StoreContext} from '../context/store';
 import CONTEXT_ACTIONS from '../context/actions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -27,6 +29,7 @@ const Loading = ({navigation}: {navigation: any}) => {
     };
     setFontSize();
 
+    /* Supabase session restoration:
     const getSession = async () => {
       const {data} = await supabase.auth.getSession();
       if (data.session !== null) {
@@ -37,6 +40,9 @@ const Loading = ({navigation}: {navigation: any}) => {
       }
     };
     getSession();
+    */
+
+    navigation.navigate('login');
   }, []);
 
   return (
