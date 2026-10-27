@@ -77,3 +77,10 @@ yarn-error.log
 .expo
 dist/
 web-build/
+# Expo export output
+dist-check/
+
+# Local environment variables
+.env
+.env.*
+!.env.example

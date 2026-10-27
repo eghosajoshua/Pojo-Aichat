@@ -12,7 +12,7 @@ const initialValues: storeType = {
   currentChatId: null,
   chatHistory: [],
   chatData: [],
-  chatFontSize: 18,
+  chatFontSize: 16,
   autoRead: false,
 };
 

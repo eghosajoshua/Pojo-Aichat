@@ -1,5 +1,6 @@
 {
   "name": "Pojo Ai chat",
+  "slug": "aichat",
   "icon": "./images/logo.png",
   "android": {
     "softwareKeyboardLayoutMode": "resize"
@@ -7,6 +8,16 @@
   "extra": {
     "eas": {
       "projectId": "3411272d-bb39-46a0-9df1-02de9c5d6057"
+    }
+  },
+  "expo": {
+    "android": {
+      "package": "com.eghosajoshua.aichat"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "3411272d-bb39-46a0-9df1-02de9c5d6057"
+      }
     }
   }
 }

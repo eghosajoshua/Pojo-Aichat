@@ -10,6 +10,7 @@ const PopOverItems = ({
 }) => {
   return items.map((item, index) => (
     <TouchableOpacity
+      key={item.title}
       onPress={event => item.onPress(event)}
       style={{
         padding: scale(8),

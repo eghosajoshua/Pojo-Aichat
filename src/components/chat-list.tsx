@@ -18,7 +18,7 @@ const ChatList = ({
     <View className="p-2">
       <FlatList
         ref={scrollViewRef}
-        contentContainerStyle={{gap: 15}}
+        contentContainerStyle={{gap: 10}}
         data={chatData}
         inverted={true}
         renderItem={({item, index}) =>

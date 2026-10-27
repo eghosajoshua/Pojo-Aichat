@@ -10,10 +10,10 @@ const ChatImage = ({imageUrl}: {imageUrl: string}) => {
       className="rounded-3xl rounded-tl-none justify-start flex items-start h-100 w-100">
       <Image
         style={{
-          width: screenWidth * 0.7,
+          width: screenWidth * 0.58,
+          height: screenWidth * 0.5,
           alignSelf: 'flex-end',
           display: 'flex',
-          minHeight: screenWidth * 0.85,
           objectFit: 'cover',
           backgroundColor: colors.DarkBlue,
           borderRadius: 10,

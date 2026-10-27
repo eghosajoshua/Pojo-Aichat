@@ -18,7 +18,7 @@ const ChatText = ({ai = false, text}: {ai?: boolean; text: string}) => {
             ? {
                 borderTopLeftRadius: 0,
                 alignSelf: 'flex-start',
-                paddingVertical: 10,
+                paddingVertical: scale(6),
               }
             : {
                 backgroundColor: colors.DarkBlue,
@@ -26,13 +26,13 @@ const ChatText = ({ai = false, text}: {ai?: boolean; text: string}) => {
                 alignSelf: 'flex-end',
               }
         }
-        className="bg-[#0D0D0D] rounded-2xl px-4 w-fit max-w-[98%] ">
+        className="bg-[#0D0D0D] rounded-2xl px-3 w-fit max-w-[90%] ">
         <Markdown
           style={{
             body: {
               color: 'white',
               fontSize: scale(chatFontSize),
-              lineHeight: scale(25),
+              lineHeight: scale(chatFontSize * 1.4),
             },
           }}>
           {text}
