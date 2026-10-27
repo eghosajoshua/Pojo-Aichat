@@ -38,12 +38,15 @@ This project currently uses Expo SDK 50. Expo Go supports a limited set of SDK v
 
 ## Build For Testers With EAS
 
-The `preview` profile is configured for internal distribution. Sign in to your Expo account, then build for Android:
+The `preview` profile is configured for internal distribution and uses the EAS `preview` environment. A local `.env` file is not sent to EAS, so add the API key to the EAS project before building. From the project folder, run:
 
 ```bash
 npx eas-cli@latest login
+npx eas-cli@latest env:set --environment preview --name EXPO_PUBLIC_GEMINI_API_KEY --value "your-gemini-api-key" --visibility sensitive
 npx eas-cli@latest build --profile preview --platform android
 ```
+
+The key is embedded in the app because it uses the `EXPO_PUBLIC_` prefix; treat it as public and restrict it in Google AI Studio. Use the same EAS environment variable for iOS preview builds.
 
 To build for iOS instead:
 
