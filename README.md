@@ -73,3 +73,9 @@ The demo limit is stored locally on the device, so it is intended for basic test
 npm test
 npm run lint
 ```
+
+## Contact
+
+Ehimwinriabe Eghosa - [eghosajosh@gmail.com](mailto:eghosajosh@gmail.com)
+
+Author Portfolio: [https://www.eghosa.site](https://www.eghosa.site)
